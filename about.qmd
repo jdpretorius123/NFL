@@ -1,0 +1,22 @@
+---
+title: "Why NFL Blogging?"
+image: pics/profile.jpg
+about:
+  template: broadside
+  links:
+    - icon: github
+      text: GitHub
+      href: https://github.com/jdpretorius123
+    - icon: x
+      text: X
+      href: https://x.com/jdpretorius_
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/justin-p-996555172/
+    - icon: envelope
+      text: Email
+      href: mailto:justin2025@gmail.com
+---
+
+## The Mission
+Blogging about the NFL is my desire to work in the league that I love.

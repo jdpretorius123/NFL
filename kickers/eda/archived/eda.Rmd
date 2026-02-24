@@ -1,0 +1,162 @@
+---
+title: "EDA Report"
+author: "Justin Pretorius"
+date: last-modified
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    theme: journal
+    highlight-style: tango
+    number-sections: true
+    df-print: paged
+    code-fold: true
+    embed-resources: true
+    css: styles.css
+params:
+  pbp_plot_file: null
+  stats_plot_file: null
+editor: 
+  chunk_output_type: console
+---
+
+```{r Setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  results = 'hold',
+  out.width = '100%',
+  out.height = '100%',
+  fig.show = 'hold'
+)
+```
+
+```{r Loading_Dependencies, include=FALSE}
+packages = c(
+  'rmarkdown',
+  'knitr',
+  'htmltools',
+  'htmlwidgets',
+  'reactable', 
+  'reactablefmtr',
+  'base64enc',
+  'tidyverse',
+  'plotly',
+  'corrplot',
+  'here'
+)
+
+check_packages = function(packages, repos = 'https://cloud.r-project.org') {
+  invisible(
+    lapply(packages, function(p) {
+      #' Checking if the package is installed
+      if (!requireNamespace(p, quietly = TRUE)) {
+        message(paste('Package', p, 'not found. Attempting to install...'))
+        
+        #' Installing the missing package
+        install.packages(p, repos = repos)
+      }
+      
+      #' Loading the package
+      suppressPackageStartupMessages(
+        library(p, character.only = TRUE)
+      )
+    })
+  )
+}
+check_packages(packages)
+```
+
+```{r Loading_Helper_Functions, include=FALSE}
+helpers_file = here('helpers', 'helpers.R')
+source(helpers_file)
+```
+
+```{r Loading_Data, include=FALSE}
+if (is.null(params$pbp_plot_file)) {
+  stop('PBP plot file not provided.')
+}
+
+pbp_plot = read_csv(params$pbp_plot_file, show_col_types = FALSE)
+pbp_confounders = na.omit(pbp_plot$confounders)
+pbp_hist = na.omit(pbp_plot$hist_vars)
+pbp_violin_y = na.omit(pbp_plot$violin_y)
+pbp_violin_x = na.omit(pbp_plot$violin_x)
+
+if (is.null(params$stats_plot_file)) {
+  stop('Stats plot file not provided.')
+}
+
+stats_plot = read_csv(params$stats_plot_file, show_col_types = FALSE)
+stats_confounders = na.omit(stats_plot$confounders)
+stats_hist = na.omit(stats_plot$hist_vars)
+stats_violin_y = na.omit(stats_plot$violin_y)
+stats_violin_x = na.omit(stats_plot$violin_x)
+
+pbp_pp_file = here('data', 'pp', 'pbp', 'pbp_pp.rdata')
+load(pbp_pp_file)
+
+stats_pp_file = here('data', 'pp', 'stats', 'stats_pp.rdata')
+load(stats_pp_file)
+```
+
+```{r Preparing_Career_Endpoints}
+pbp_endpoints = pbp_pp %>%
+  group_by(kicker_player_id) %>%
+  summarise(
+    fg_pct = last(career_fg_pct),
+    fg_att = last(career_fg_attempt),
+    .groups = 'drop'
+  ) %>%
+  dplyr::select(fg_pct, fg_att)
+
+summary_funcs = list(
+  min    = ~min(., na.rm = TRUE),
+  max    = ~max(., na.rm = TRUE),
+  mean   = ~mean(., na.rm = TRUE),
+  median = ~median(., na.rm = TRUE),
+  q25    = ~quantile(., 0.25, na.rm = TRUE),
+  q75    = ~quantile(., 0.75, na.rm = TRUE)
+)
+pbp_endpoint_stats = sumstats(
+  pbp_endpoints,
+  colnames(pbp_endpoints),
+  summary_funcs
+)
+```
+
+```{r Career_Endpoints_Table}
+col_defs = list(
+  summary_stat = colDef(
+    name = 'Summary Statistic', 
+    align = 'left'
+  ),
+  fg_pct = colDef(
+    name = 'FG%',
+    align = 'right',
+    format = colFormat(percent = TRUE, digits = 2)
+  ),
+  fg_att = colDef(name = 'FG Attempts', align = 'right')
+)
+download_button = download_link(
+  data = pbp_endpoint_stats,
+  filename = 'pbp_endpoints.csv'
+)
+pbp_endpoints_table = reactable(
+  data = pbp_endpoint_stats,
+  columns = col_defs,
+  sortable = FALSE,
+  filterable = FALSE,
+  pagination = FALSE,
+  defaultPageSize = 15
+)
+tagList(download_button, pbp_endpoints_table)
+```
+
+```{r Career_Endpoints_Charts}
+tagList(
+  histograms(pbp_endpoints, 50, colnames(pbp_endpoints)),
+  dynamic_scatter_plot(pbp_endpoints, c('fg_att'), c('fg_pct'))
+)
+```

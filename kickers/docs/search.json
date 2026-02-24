@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About the Project",
+    "section": "",
+    "text": "This project was born out of a desire to understand the high-stakes world of NFL kicking."
+  },
+  {
+    "objectID": "about.html#the-mission",
+    "href": "about.html#the-mission",
+    "title": "About the Project",
+    "section": "",
+    "text": "This project was born out of a desire to understand the high-stakes world of NFL kicking."
+  },
+  {
+    "objectID": "about.html#the-tech-stack",
+    "href": "about.html#the-tech-stack",
+    "title": "About the Project",
+    "section": "The Tech Stack",
+    "text": "The Tech Stack\n\nLanguage: R\nEngine: Quarto\nKey Packages: tidyverse, plotly, nflreadR\nAutomation: PowerShell scripts for weekly data updates."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "NFL Kicker Blogging",
+    "section": "",
+    "text": "Welcome to my project. Below you will find all my recent reports and EDA.\n\n\n\n\n\n\n\n\nNo matching items"
+  }
+]
