@@ -1,0 +1,11 @@
+---
+title: "NFL Kicker Blogging"
+listing:
+  contents: blogs
+  type: default
+  sort: "date desc"
+  categories: true
+---
+
+Welcome to my project. Below you will find all my recent reports and EDA.
+

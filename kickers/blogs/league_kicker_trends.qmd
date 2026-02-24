@@ -1,0 +1,338 @@
+---
+title: "League-Wide NFL Kicker Trends"
+author: "Justin Pretorius"
+date: "last-modified"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    theme: journal
+    highlight-style: tango
+    number-sections: false
+    df-print: paged
+    code-fold: true
+    code-tools: true
+    embed-resources: true
+    css: css/styles.css
+execute: 
+  echo: false
+  warning: false
+  message: false
+editor:
+  render-on-save: false
+  chunk_output_type: console
+---
+
+```{r}
+#| label: Setup
+#| include: false
+
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  results = 'hold',
+  out.width = '100%',
+  out.height = '100%',
+  fig.show = 'hold'
+)
+```
+
+```{r}
+#| label: Loading_Dependencies
+#| include: false
+
+packages = c(
+  'quarto',
+  'htmltools',
+  'htmlwidgets',
+  'reactable', 
+  'reactablefmtr',
+  'base64enc',
+  'tidyverse',
+  'plotly',
+  'here',
+  'broom'
+)
+
+check_packages = function(packages, repos = '[https://cloud.r-project.org](https://cloud.r-project.org)') {
+  invisible(
+    lapply(packages, function(p) {
+      if (!requireNamespace(p, quietly = TRUE)) {
+        message(paste('Package', p, 'not found. Attempting to install...'))
+        install.packages(p, repos = repos)
+      }
+      suppressPackageStartupMessages(
+        library(p, character.only = TRUE)
+      )
+    })
+  )
+}
+check_packages(packages)
+
+kicker_trends_file = here(
+  'kickers',
+  'data',
+  'analytic',
+  'kicker_trends',
+  'kicker_trends.rdata'
+)
+if (file.exists(kicker_trends_file)) {
+  load(kicker_trends_file)
+  cat(basename(kicker_trends_file), 'has been loaded.\n')
+} else {
+  cat(basename(kicker_trends_file), 'not found.\n')
+}
+
+league_trends_file = here(
+  'kickers',
+  'data',
+  'analytic',
+  'league_trends',
+  'league_trends.rdata'
+)
+if (file.exists(league_trends_file)) {
+  load(league_trends_file)
+  cat(basename(league_trends_file), 'has been loaded.\n')
+} else {
+  cat(basename(league_trends_file), 'not found.\n')
+}
+
+helpers_file = here('kickers', 'helpers', 'helpers.R')
+source(helpers_file)
+```
+
+## Who Am I?
+My name is Justin Pretorius. I am a sport enthusiast who doesn't know when to give up. My favorite professional teams are the Broncos, Nuggets, Avalanche, and the Rockies. At the collegiate level, I'm all for the Buffs and Rams. Have patience with Deion. :)
+
+## Why Kickers?
+I've been involved with football my entire life, all the way from player and fan to only fan. Terrell Davis was my inspiration as I sought to be an NFL running back. However, I don't think I ever started a game. Being a backup, I was a kicker's best friend. Who do you think caught all the balls during punt and kickoff practice?
+
+As a fan, if there is one thing that I've noticed watching games recently, it's that kickers are becoming focal points of the league. Think about it. Whenever a game is coming down to the wire, and it's only a 1 or 2 point difference, what is the first thing that pops into your head? Field goal.
+
+Whenever your team loses by 1 or 2 points, and your kicker missed a key field goal and/or extra point during the game, who do you blame? The kicker.
+
+I harp on the negatives because humans are inclined to remember the bad times. So to brighten the mood, is there a better feeling than seeing your team's kicker hit a game-winning field goal? No. It's even better when the game is a back-and-forth battle, or when your team seals the deal to cap off an incredible comeback. There is something special about that minute before the kick when it's deadpan silence and everyone is holding their breath. It's captivating. It's emotional. NFL kicking is quickly becoming one of the best parts of the league.
+
+This year we witnessed Cam Little make history. He hit a 70 yard field goal. After watching it on repeat, I decided to write about kickers. Bottom-line, I hate them in fantasy football, but they're becoming more important than ever.
+
+## Setting the Stage
+To begin this journey into the game's third easiest scapegoat, I start with league-wide trends. These are the questions I hope to answer in this blog.
+
+* Are kickers getting more athletic?
+* Are they getting more chances to kick?
+* Has the league's distance per field goal increased?
+* Are they getting more accurate, and are they getting more accurate from further out?
+
+Did I analyze EVERY kicker signed by an NFL team over the past 25 years to draw my conclusions? Nope. I removed one-offs from the data by focusing on only those kickers that met my per-season thresholds for field goal attempts.
+
+With all that behind us, here we go...
+
+## Kicker Demographics
+It feels like yesterday when the league record for a field goal was 63-yards. Now that record is seemingly smashed every year.
+
+Is it because kickers nowadays are all 6 feet tall, lean, and jacked. Is the wimpiest guy on the team now an athletic freak? Looking at the trends in median height, weight, and age, the data suggest this is the case. It's clear that kickers have gotten taller and leaner.
+
+It's not surprising to see only a one inch difference in height over the last 25 years. If the current median height of an NFL kicker were 6' 5", I'm sure they'd be trying their hand at a different position or sport.
+
+Were you thinking basketball? lol
+
+The drop in weight is the most surprising trend. A ten pound difference in weight is both statistically, and biologically, significant. The lighter and leaner kickers of the modern day NFL aren't just a perception, they're a reality. They are becoming athletic freaks. It'd be cool to see if this results in more fakes on special teams.
+
+Before I move on, it is a bummer to see that the median age of NFL kickers hasn't changed much. My first thought was greater athleticism could be explained by a youth movement at the position.
+
+The Aussie Advent is my second guess. More and more kickers entering the league are Australian. It could be Australia's dedication to growing the skill of the position. They have youth camps and kicking programs that many current Australian NFL kickers spent their entire childhood within. This line of investigation deserves way more research.
+
+```{r}
+#| label: Demographics
+
+demo = league_trends %>%
+  dplyr::select(season, median_age, median_height, median_weight) %>%
+  pivot_longer(-season, names_to = 'metric', values_to = 'value') %>%
+  group_by(metric) %>%
+  summarize(
+    stats = list(tidy(lm(value ~ season))),
+    rsq = glance(lm(value ~ season))$r.squared,
+    p = glance(lm(value ~ season))$p.value,
+    p_format = format(p, scientific = TRUE, digits = 3)
+  ) %>%
+  unnest(stats) %>%
+  filter(term == 'season', p <= 0.05) %>%
+  dplyr::select(metric, coef = estimate, rsq, p_format)
+
+col_defs = list(
+  metric = colDef(name = 'Metric', align = 'left'),
+  coef = colDef(
+    name = 'Rate of Change per Year',
+    align = 'right',
+    format = colFormat(digits = 3)
+  ),
+  rsq = colDef(
+    name = 'Correlation Coefficient (R Sq.)',
+    align = 'right',
+    format = colFormat(digits = 3)
+  ),
+  p_format = colDef(
+    name = 'P Value',
+    align = 'right',
+    format = colFormat(digits = 3)
+  )
+)
+download_button = download_link(data = demo, filename = 'demo.csv')
+demo_table = reactable(
+  data = demo,
+  columns = col_defs,
+  sortable = FALSE,
+  filterable = FALSE,
+  pagination = FALSE,
+  defaultPageSize = 15
+)
+tagList(download_button, demo_table)
+```
+
+```{r}
+#| label: Demographics_Charts
+
+x_cols = c('season')
+y_cols = c('median_age', 'median_height', 'median_weight')
+tagList(dynamic_line_plot(league_trends, x_cols, y_cols))
+```
+
+Now that we have established that the data suggests modern day NFL kickers are becoming athletic freaks, let's dive into kicking related trends across the league.
+
+## Kicking Trends
+Whether you're looking at the table or the charts, it is cut and dry that NFL kickers are getting more field goal attempts than ever. This is evident from the statistical significance of the league median field goal attempts (median_fga) per season. It's growing at a rate of 11.4% per year since 2001. I'm not going to ignore the 2017 season. It could be the outlier driving this trend. I mean, a difference of 1.5 between 2001 and 2025 isn't convincing.
+
+However, a quick sensitivity analysis reveals that this trend is robust.
+
+Interestingly, if you probe deeper into this finding, kickers are getting less attempts at distances less than 30 yards out and more attempts at distances greater than 50 yards out. This makes sense when you consider there has also been a steady increase in the league median kick distance (median_kick_dst) per field goal attempt.
+
+So, kickers are getting more field goal attempts than ever. Got it. Combine this with less attempts at distances less than 30 yards out and more attempts at distances greater than 50 yards, and we see a greater league median kick distance per field goal attempt. That's a mouth full, but I think you get the picture.
+
+Before I move on, I'm going to say that again. Kickers are getting less attempts at distances less than 30 yards out and more attempts at distances greater than 50 yards out...
+
+Doesn't that sound weird?
+
+After hearing it, I would think kickers are getting less accurate. Think about it. Closer field goals are easier to convert. Accuracy is mathematically calculated as conversions divided by attempts. Therefore, closer field goals also pad stats, like field goal percentage. Right?
+
+Turns out the data suggests that kickers are getting more accurate. In fact, the league average field goal percentage has steadily increased over the past 25 years, regardless the distance.
+
+This is incredible. It's beautifully captured by the heat map, especially when you focus on the row that represents kicking distances 60 yards and out. It just gets lighter and lighter as you move from the left to the right. This means it's getting better.
+
+```{r}
+#| label: Kicking_Trends
+
+trends_vars = c(
+  'season',
+  'median_kick_dst',
+  'median_fga',
+  'fga_0_29',
+  'fga_30_39',
+  'fga_40_49',
+  'fga_50_59',
+  'fga_60_',
+  'fg_pct_0_29',
+  'fg_pct_30_39',
+  'fg_pct_40_49',
+  'fg_pct_50_59',
+  'fg_pct_60_'
+)
+trends = league_trends %>%
+  dplyr::select(all_of(trends_vars)) %>%
+  pivot_longer(-season, names_to = 'metric', values_to = 'value') %>%
+  group_by(metric) %>%
+  summarize(
+    stats = list(tidy(lm(value ~ season))),
+    rsq = glance(lm(value ~ season))$r.squared,
+    p = glance(lm(value ~ season))$p.value,
+    p_format = format(p, scientific = TRUE, digits = 3)
+  ) %>%
+  unnest(stats) %>%
+  filter(term == 'season', p <= 0.05) %>%
+  dplyr::select(metric, coef = estimate, rsq, p_format)
+
+col_defs = list(
+  metric = colDef(name = 'Metric', align = 'left'),
+  coef = colDef(
+    name = 'Rate of Change per Year',
+    align = 'right',
+    format = colFormat(digits = 3)
+  ),
+  rsq = colDef(
+    name = 'Correlation Coefficient (R Sq.)',
+    align = 'right',
+    format = colFormat(digits = 3)
+  ),
+  p_format = colDef(
+    name = 'P Value',
+    align = 'right',
+    format = colFormat(digits = 3)
+  )
+)
+download_button = download_link(data = trends, filename = 'trends.csv')
+trends_table = reactable(
+  data = trends,
+  columns = col_defs,
+  sortable = FALSE,
+  filterable = FALSE,
+  pagination = FALSE,
+  defaultPageSize = 15
+)
+tagList(download_button, trends_table)
+```
+
+```{r}
+#| label: Trends_Line_Chart
+
+line_x = c('season')
+line_y = c(
+  'median_kick_dst',
+  'median_fga',
+  'fga_0_29',
+  'fga_30_39',
+  'fga_40_49',
+  'fga_50_59',
+  'fga_60_',
+  'fg_pct_0_29',
+  'fg_pct_30_39',
+  'fg_pct_40_49',
+  'fg_pct_50_59',
+  'fg_pct_60_'
+)
+tagList(dynamic_line_plot(league_trends, line_x, line_y))
+```
+
+```{r}
+#| label: Trends_Heatmap
+
+metrics = list(
+  "Field Goal Percentage" = c(
+    'fg_pct_0_29', 'fg_pct_30_39', 'fg_pct_40_49', 'fg_pct_50_59', 'fg_pct_60_'
+    ),
+  "Field Goal Attempts" = c(
+    'fga_0_29', 'fga_30_39', 'fga_40_49', 'fga_50_59', 'fga_60_'
+    )
+)
+
+tagList(dynamic_heatmap(league_trends, 'season', metrics))
+```
+
+## Summary
+That was a lot of info, so let's recap.
+
+* Are kickers getting more athletic?
+  * The data suggests this is case given they are getting taller and leaner.
+* Are they getting more chances to kick?
+  * Kickers are indeed getting more chances to kick.
+* Has the league's distance per field goal increased?
+  * You bet. In fact, they're getting more attempts at distances 50 yards and out.
+* Are they getting more accurate, and are they getting more accurate from further out?
+  * Yes and yes. Not only are they getting more accurate overall, the increase in accuracy at distances 50 yards and out is the most notable.
+
+That seems like a lot, but I'm just getting started. Next week I'm diving into kicking at the team level, so stay tuned.
+
+## Social Media
+* [GitHub](https://github.com/jdpretorius123)
+* [X](https://x.com/jdpretorius_)
+* [LinkedIn](https://www.linkedin.com/in/justin-p-996555172/)
+* [Email](mailto:justin2025@gmail.com)

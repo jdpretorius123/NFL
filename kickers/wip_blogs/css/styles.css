@@ -1,0 +1,27 @@
+.pagebreak{
+  page-break-after: always;
+}
+
+/* single-spacing in HTML */
+body { 
+  line-height: 1.2; font-size: 12pt; 
+}
+a { 
+  color: blue;
+}
+
+/* reducing display-math font size to 80% */
+.MathJax_Display {
+font-size: 0.8em !important;
+margin: 0.5em !important;
+}
+
+/* Visual screen separator (looks like a page break) */
+.screen-page-break {
+  border: none; /* Remove default border */
+  border-top: 5px dashed #ccc; /* A thick, dashed line */
+  height: 50px; /* Space above and below the line */
+  margin-top: 50px;
+  margin-bottom: 50px;
+  clear: both; /* Ensures it's on its own line */
+}
