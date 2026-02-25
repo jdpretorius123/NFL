@@ -1,12 +1,13 @@
 ---
-title: "NFL Blogging"
+title: "Blogs"
 listing:
   contents: 
     - kickers
   type: default
   sort: "date desc"
   categories: true
+  fields: [title, date]
 ---
 
-Welcome to my NFL blogging page. Here you will find all my recent blogs. :)
+Welcome to my NFL blogging page. You will find all my recent blogs listed here. :)
 

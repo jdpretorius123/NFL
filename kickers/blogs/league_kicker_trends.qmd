@@ -1,5 +1,5 @@
 ---
-title: "League-Wide NFL Kicker Trends"
+title: "League-Wide Trends in NFL Kicking"
 author: "Justin Pretorius"
 date: "last-modified"
 format:

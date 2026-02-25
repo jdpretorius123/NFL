@@ -11,7 +11,7 @@ project:
     - "!*/wip_blogs"
 
 website:
-  title: "NFL Blogging: The Pretorius Perspective"
+  title: "The Pretorius Perspective"
   navbar:
     left:
       - href: index.qmd

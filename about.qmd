@@ -1,5 +1,6 @@
 ---
-title: "Why NFL Blogging?"
+title: "NFL Blogging"
+subtitle: "Living the Dream"
 image: pics/profile.jpg
 toc: false
 about:
@@ -8,16 +9,12 @@ about:
   image-shape: rounded
   links:
     - icon: github
-      text: GitHub
       href: https://github.com/jdpretorius123
     - icon: twitter-x
-      text: X
       href: https://x.com/jdpretorius_
     - icon: linkedin
-      text: LinkedIn
       href: https://www.linkedin.com/in/justin-p-996555172/
     - icon: envelope
-      text: Email
       href: mailto:justin2025@gmail.com
 ---
 
