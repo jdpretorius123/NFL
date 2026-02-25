@@ -43,3 +43,15 @@ a:hover {
   margin-bottom: 50px;
   clear: both;
 }
+
+/* Force the About section to stay on top and use full width */
+.quarto-about-solana {
+  display: block !important;
+  margin-top: 0 !important;
+}
+
+/* Ensure the image doesn't vanish or truncate */
+.about-entity img {
+  max-width: 100% !important;
+  height: auto !important;
+}
