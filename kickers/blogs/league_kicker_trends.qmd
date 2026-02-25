@@ -6,7 +6,7 @@ format:
   html:
     toc: true
     toc-depth: 2
-    theme: journal
+    theme: sandstone
     highlight-style: tango
     number-sections: false
     df-print: paged

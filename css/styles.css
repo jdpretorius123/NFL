@@ -1,26 +1,24 @@
-/* --- Global Layout Adjustments --- */
-
+/* --- 1. Global Layout & "Cushion" --- */
 body { 
-  line-height: 1.6; /* Increased for better readability of NFL analysis */
-  font-size: 12pt; 
-  max-width: 1100px; /* Expands the content area beyond the default */
-  margin: 0 auto;    /* Centers the wider content area */
-  padding: 0 20px;   /* Provides the "cushion" on mobile/small screens */
+  line-height: 1.6;        /* Professional spacing for readability */
+  font-size: 12pt;         /* Standard legibility */
+  max-width: 1150px;       /* Widens page for data/tables while staying centered */
+  margin: 0 auto;          /* Centers the page */
+  padding: 0 25px;         /* The "cushion" for mobile and edge spacing */
+  color: #212529;          /* Sharp off-black text for high contrast */
 }
 
-/* Fixes for the "shoved" layout on About pages */
-.quarto-about-broadside .about-entity {
-  margin-bottom: 2em;
-}
-
-/* --- Existing Styles --- */
-
-.pagebreak {
-  page-break-after: always;
+/* --- 2. Typography --- */
+h1, h2, h3, h4 {
+  font-family: inherit;
+  text-transform: uppercase; /* Mimics the editorial feel of 'Journal' */
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  margin-top: 1.5em;
 }
 
 a { 
-  color: #0056b3; /* A slightly more professional blue than standard 'blue' */
+  color: #0056b3;          /* Professional blue */
   text-decoration: none;
 }
 
@@ -28,30 +26,50 @@ a:hover {
   text-decoration: underline;
 }
 
-/* reducing display-math font size to 80% */
+/* --- 3. "About" Page Layout --- */
+.quarto-about-trestles .about-entity {
+  padding-right: 2em;
+}
+
+.about-entity img {
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: 8px;      /* Slight softening of the profile pic edges */
+}
+
+/* --- 4. Technical Formatting --- */
+/* Single-spacing for specific blocks if needed */
+.single-space {
+  line-height: 1.0;
+}
+
+/* Reducing display-math font size */
 .MathJax_Display {
   font-size: 0.8em !important;
   margin: 0.5em !important;
 }
 
+/* Page break for PDF/Print */
+.pagebreak {
+  page-break-after: always;
+}
+
 /* Visual screen separator */
 .screen-page-break {
   border: none;
-  border-top: 5px dashed #ccc;
-  height: 50px;
-  margin-top: 50px;
-  margin-bottom: 50px;
+  border-top: 3px dashed #ccc;
+  height: 0;
+  margin: 40px 0;
   clear: both;
 }
 
-/* Force the About section to stay on top and use full width */
-.quarto-about-solana {
-  display: block !important;
-  margin-top: 0 !important;
-}
-
-/* Ensure the image doesn't vanish or truncate */
-.about-entity img {
-  max-width: 100% !important;
-  height: auto !important;
+/* --- 5. Responsive Tweaks --- */
+@media (max-width: 768px) {
+  body {
+    padding: 0 15px;
+  }
+  
+  .quarto-about-trestles {
+    display: block !important; /* Stack vertically only on small mobile */
+  }
 }
