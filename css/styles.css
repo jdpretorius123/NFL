@@ -1,27 +1,45 @@
-.pagebreak{
+/* --- Global Layout Adjustments --- */
+
+body { 
+  line-height: 1.6; /* Increased for better readability of NFL analysis */
+  font-size: 12pt; 
+  max-width: 1100px; /* Expands the content area beyond the default */
+  margin: 0 auto;    /* Centers the wider content area */
+  padding: 0 20px;   /* Provides the "cushion" on mobile/small screens */
+}
+
+/* Fixes for the "shoved" layout on About pages */
+.quarto-about-broadside .about-entity {
+  margin-bottom: 2em;
+}
+
+/* --- Existing Styles --- */
+
+.pagebreak {
   page-break-after: always;
 }
 
-/* single-spacing in HTML */
-body { 
-  line-height: 1.2; font-size: 12pt; 
-}
 a { 
-  color: blue;
+  color: #0056b3; /* A slightly more professional blue than standard 'blue' */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 /* reducing display-math font size to 80% */
 .MathJax_Display {
-font-size: 0.8em !important;
-margin: 0.5em !important;
+  font-size: 0.8em !important;
+  margin: 0.5em !important;
 }
 
-/* Visual screen separator (looks like a page break) */
+/* Visual screen separator */
 .screen-page-break {
-  border: none; /* Remove default border */
-  border-top: 5px dashed #ccc; /* A thick, dashed line */
-  height: 50px; /* Space above and below the line */
+  border: none;
+  border-top: 5px dashed #ccc;
+  height: 50px;
   margin-top: 50px;
   margin-bottom: 50px;
-  clear: both; /* Ensures it's on its own line */
+  clear: both;
 }

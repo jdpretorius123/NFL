@@ -1,8 +1,9 @@
 ---
 title: "Why NFL Blogging?"
 image: pics/profile.jpg
+toc: false
 about:
-  template: broadside
+  template: trestles
   links:
     - icon: github
       text: GitHub
