@@ -21,7 +21,7 @@ website:
 
 format:
   html:
-    theme: journal
+    theme: cosmo
     css: css/styles.css    
     embed-resources: true
     toc: true
