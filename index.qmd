@@ -1,11 +1,12 @@
 ---
 title: "NFL Blogging"
 listing:
-  contents: blogs
+  contents: 
+    - "kickers/*.qmd"
   type: default
   sort: "date desc"
   categories: true
 ---
 
-Welcome to my NFL blogging page. Below you will find all my recent blogs. :)
+Welcome to my NFL blogging page. Here you will find all my recent blogs. :)
 
