@@ -2,7 +2,7 @@
 title: "NFL Blogging"
 listing:
   contents: 
-    - "kickers/*.qmd"
+    - kickers
   type: default
   sort: "date desc"
   categories: true

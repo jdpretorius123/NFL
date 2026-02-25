@@ -1,0 +1,79 @@
+[
+  {
+    "objectID": "kickers/blogs/league_kicker_trends.html",
+    "href": "kickers/blogs/league_kicker_trends.html",
+    "title": "League-Wide NFL Kicker Trends",
+    "section": "",
+    "text": "My name is Justin Pretorius. I am a sport enthusiast who doesn’t know when to give up. My favorite professional teams are the Broncos, Nuggets, Avalanche, and the Rockies. At the collegiate level, I’m all for the Buffs and Rams. Have patience with Deion. :)"
+  },
+  {
+    "objectID": "kickers/blogs/league_kicker_trends.html#who-am-i",
+    "href": "kickers/blogs/league_kicker_trends.html#who-am-i",
+    "title": "League-Wide NFL Kicker Trends",
+    "section": "",
+    "text": "My name is Justin Pretorius. I am a sport enthusiast who doesn’t know when to give up. My favorite professional teams are the Broncos, Nuggets, Avalanche, and the Rockies. At the collegiate level, I’m all for the Buffs and Rams. Have patience with Deion. :)"
+  },
+  {
+    "objectID": "kickers/blogs/league_kicker_trends.html#why-kickers",
+    "href": "kickers/blogs/league_kicker_trends.html#why-kickers",
+    "title": "League-Wide NFL Kicker Trends",
+    "section": "Why Kickers?",
+    "text": "Why Kickers?\nI’ve been involved with football my entire life, all the way from player and fan to only fan. Terrell Davis was my inspiration as I sought to be an NFL running back. However, I don’t think I ever started a game. Being a backup, I was a kicker’s best friend. Who do you think caught all the balls during punt and kickoff practice?\nAs a fan, if there is one thing that I’ve noticed watching games recently, it’s that kickers are becoming focal points of the league. Think about it. Whenever a game is coming down to the wire, and it’s only a 1 or 2 point difference, what is the first thing that pops into your head? Field goal.\nWhenever your team loses by 1 or 2 points, and your kicker missed a key field goal and/or extra point during the game, who do you blame? The kicker.\nI harp on the negatives because humans are inclined to remember the bad times. So to brighten the mood, is there a better feeling than seeing your team’s kicker hit a game-winning field goal? No. It’s even better when the game is a back-and-forth battle, or when your team seals the deal to cap off an incredible comeback. There is something special about that minute before the kick when it’s deadpan silence and everyone is holding their breath. It’s captivating. It’s emotional. NFL kicking is quickly becoming one of the best parts of the league.\nThis year we witnessed Cam Little make history. He hit a 70 yard field goal. After watching it on repeat, I decided to write about kickers. Bottom-line, I hate them in fantasy football, but they’re becoming more important than ever."
+  },
+  {
+    "objectID": "kickers/blogs/league_kicker_trends.html#setting-the-stage",
+    "href": "kickers/blogs/league_kicker_trends.html#setting-the-stage",
+    "title": "League-Wide NFL Kicker Trends",
+    "section": "Setting the Stage",
+    "text": "Setting the Stage\nTo begin this journey into the game’s third easiest scapegoat, I start with league-wide trends. These are the questions I hope to answer in this blog.\n\nAre kickers getting more athletic?\nAre they getting more chances to kick?\nHas the league’s distance per field goal increased?\nAre they getting more accurate, and are they getting more accurate from further out?\n\nDid I analyze EVERY kicker signed by an NFL team over the past 25 years to draw my conclusions? Nope. I removed one-offs from the data by focusing on only those kickers that met my per-season thresholds for field goal attempts.\nWith all that behind us, here we go…"
+  },
+  {
+    "objectID": "kickers/blogs/league_kicker_trends.html#kicker-demographics",
+    "href": "kickers/blogs/league_kicker_trends.html#kicker-demographics",
+    "title": "League-Wide NFL Kicker Trends",
+    "section": "Kicker Demographics",
+    "text": "Kicker Demographics\nIt feels like yesterday when the league record for a field goal was 63-yards. Now that record is seemingly smashed every year.\nIs it because kickers nowadays are all 6 feet tall, lean, and jacked. Is the wimpiest guy on the team now an athletic freak? Looking at the trends in median height, weight, and age, the data suggest this is the case. It’s clear that kickers have gotten taller and leaner.\nIt’s not surprising to see only a one inch difference in height over the last 25 years. If the current median height of an NFL kicker were 6’ 5”, I’m sure they’d be trying their hand at a different position or sport.\nWere you thinking basketball? lol\nThe drop in weight is the most surprising trend. A ten pound difference in weight is both statistically, and biologically, significant. The lighter and leaner kickers of the modern day NFL aren’t just a perception, they’re a reality. They are becoming athletic freaks. It’d be cool to see if this results in more fakes on special teams.\nBefore I move on, it is a bummer to see that the median age of NFL kickers hasn’t changed much. My first thought was greater athleticism could be explained by a youth movement at the position.\nThe Aussie Advent is my second guess. More and more kickers entering the league are Australian. It could be Australia’s dedication to growing the skill of the position. They have youth camps and kicking programs that many current Australian NFL kickers spent their entire childhood within. This line of investigation deserves way more research.\n\n\nDownload CSV\n\n\n\n\n\n\n\n\n\n\nNow that we have established that the data suggests modern day NFL kickers are becoming athletic freaks, let’s dive into kicking related trends across the league."
+  },
+  {
+    "objectID": "kickers/blogs/league_kicker_trends.html#kicking-trends",
+    "href": "kickers/blogs/league_kicker_trends.html#kicking-trends",
+    "title": "League-Wide NFL Kicker Trends",
+    "section": "Kicking Trends",
+    "text": "Kicking Trends\nWhether you’re looking at the table or the charts, it is cut and dry that NFL kickers are getting more field goal attempts than ever. This is evident from the statistical significance of the league median field goal attempts (median_fga) per season. It’s growing at a rate of 11.4% per year since 2001. I’m not going to ignore the 2017 season. It could be the outlier driving this trend. I mean, a difference of 1.5 between 2001 and 2025 isn’t convincing.\nHowever, a quick sensitivity analysis reveals that this trend is robust.\nInterestingly, if you probe deeper into this finding, kickers are getting less attempts at distances less than 30 yards out and more attempts at distances greater than 50 yards out. This makes sense when you consider there has also been a steady increase in the league median kick distance (median_kick_dst) per field goal attempt.\nSo, kickers are getting more field goal attempts than ever. Got it. Combine this with less attempts at distances less than 30 yards out and more attempts at distances greater than 50 yards, and we see a greater league median kick distance per field goal attempt. That’s a mouth full, but I think you get the picture.\nBefore I move on, I’m going to say that again. Kickers are getting less attempts at distances less than 30 yards out and more attempts at distances greater than 50 yards out…\nDoesn’t that sound weird?\nAfter hearing it, I would think kickers are getting less accurate. Think about it. Closer field goals are easier to convert. Accuracy is mathematically calculated as conversions divided by attempts. Therefore, closer field goals also pad stats, like field goal percentage. Right?\nTurns out the data suggests that kickers are getting more accurate. In fact, the league average field goal percentage has steadily increased over the past 25 years, regardless the distance.\nThis is incredible. It’s beautifully captured by the heat map, especially when you focus on the row that represents kicking distances 60 yards and out. It just gets lighter and lighter as you move from the left to the right. This means it’s getting better.\n\n\nDownload CSV"
+  },
+  {
+    "objectID": "kickers/blogs/league_kicker_trends.html#summary",
+    "href": "kickers/blogs/league_kicker_trends.html#summary",
+    "title": "League-Wide NFL Kicker Trends",
+    "section": "Summary",
+    "text": "Summary\nThat was a lot of info, so let’s recap.\n\nAre kickers getting more athletic?\n\nThe data suggests this is case given they are getting taller and leaner.\n\nAre they getting more chances to kick?\n\nKickers are indeed getting more chances to kick.\n\nHas the league’s distance per field goal increased?\n\nYou bet. In fact, they’re getting more attempts at distances 50 yards and out.\n\nAre they getting more accurate, and are they getting more accurate from further out?\n\nYes and yes. Not only are they getting more accurate overall, the increase in accuracy at distances 50 yards and out is the most notable.\n\n\nThat seems like a lot, but I’m just getting started. Next week I’m diving into kicking at the team level, so stay tuned."
+  },
+  {
+    "objectID": "kickers/blogs/league_kicker_trends.html#social-media",
+    "href": "kickers/blogs/league_kicker_trends.html#social-media",
+    "title": "League-Wide NFL Kicker Trends",
+    "section": "Social Media",
+    "text": "Social Media\n\nGitHub\nX\nLinkedIn\nEmail"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "NFL Blogging",
+    "section": "",
+    "text": "Welcome to my NFL blogging page. Here you will find all my recent blogs. :)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLeague-Wide NFL Kicker Trends\n\n\n\n\n\n\n\n\nFeb 24, 2026\n\n\nJustin Pretorius\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Why NFL Blogging?",
+    "section": "",
+    "text": "Blogging about the NFL is my desire to work in the league that I love."
+  },
+  {
+    "objectID": "about.html#the-mission",
+    "href": "about.html#the-mission",
+    "title": "Why NFL Blogging?",
+    "section": "",
+    "text": "Blogging about the NFL is my desire to work in the league that I love."
+  }
+]

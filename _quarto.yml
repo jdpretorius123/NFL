@@ -4,10 +4,9 @@ project:
   render:
     - "index.qmd"
     - "about.qmd"
-    - "*/about.qmd"
     - "*/blogs/"
     - "!*/eda/"
-    - "!*/wip/blogs"
+    - "!*/wip_blogs"
 
 website:
   title: "NFL Blogging: The Pretorius Perspective"
@@ -17,8 +16,6 @@ website:
         text: Home
       - href: about.qmd
         text: About
-      - href: kickers/about.qmd
-        text: Kickers
 
 format:
   html:
