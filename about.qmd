@@ -7,7 +7,7 @@ about:
     - icon: github
       text: GitHub
       href: https://github.com/jdpretorius123
-    - icon: x
+    - icon: twitter-x
       text: X
       href: https://x.com/jdpretorius_
     - icon: linkedin

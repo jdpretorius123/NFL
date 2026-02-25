@@ -1,6 +1,8 @@
 project:
   type: website
   output-dir: docs
+  resources:
+    - "pics/"
   render:
     - "index.qmd"
     - "about.qmd"
