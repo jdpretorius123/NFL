@@ -168,7 +168,7 @@ col_defs = list(
     format = colFormat(digits = 3)
   ),
   rsq = colDef(
-    name = 'Correlation Coefficient (R Sq.)',
+    name = 'Coefficient of Determination (R Sq.)',
     align = 'right',
     format = colFormat(digits = 3)
   ),
@@ -259,7 +259,7 @@ col_defs = list(
     format = colFormat(digits = 3)
   ),
   rsq = colDef(
-    name = 'Correlation Coefficient (R Sq.)',
+    name = 'Coefficient of Determination (R Sq.)',
     align = 'right',
     format = colFormat(digits = 3)
   ),
