@@ -1,0 +1,69 @@
+**********************
+PowerShell transcript start
+Start time: 20260225183457
+Username: JPRETORIUS\justi
+RunAs User: JPRETORIUS\justi
+Configuration Name: 
+Machine: JPRETORIUS (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -ExecutionPolicy Bypass -File C:\Users\justi\Desktop\R_Projects\personal_projects\NFL\kickers\automate_eda.ps1
+Process ID: 23332
+PSVersion: 7.5.4
+PSEdition: Core
+GitCommitId: 7.5.4
+OS: Microsoft Windows 10.0.26200
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+Transcript started, output file is C:\Users\justi\Desktop\R_Projects\personal_projects\NFL\kickers\logs\run_2026-02-25-1834.txt
+Off-season: Running monthly maintenance update...
+Executing the ETL Script
+pbp.rdata has been deleted.
+Saving a new copy...
+pbp.rdata has been saved.
+stats.rdata has been deleted.
+Saving a new copy...
+stats.rdata has been saved.
+ETL Script was run successfully.
+Executing the Cleaning Script
+pbp_clean.rdata has been deleted.
+Saving a new copy...
+pbp_clean.rdata has been saved.
+stats_clean.rdata has been deleted.
+Saving a new copy...
+stats_clean.rdata has been saved.
+Cleaning Script was run successfully.
+Executing the PP Script
+pbp_pp.rdata has been deleted.
+Saving a new copy...
+pbp_pp.rdata has been saved.
+stats_pp.rdata has been deleted.
+Saving a new copy...
+stats_pp.rdata has been saved.
+PP Script was run successfully.
+Generating the EDA report...
+  css:
+    - css/styles.css
+  variables: {}
+
+metadata
+  document-css: false
+  link-citations: true
+  date-format: long
+  lang: en
+  title: EDA Report
+  author: Justin Pretorius
+  date: last-modified
+  editor:
+    chunk_output_type: console
+  theme: journal
+
+Output created: EDA_2026-02-25.html
+Success: EDA report generated successfully.
+Report rendered and saved to C:\Users\justi\Desktop\R_Projects\personal_projects\NFL\kickers\eda\EDA_2026-02-25.html
+**********************
+PowerShell transcript end
+End time: 20260225184122
+**********************

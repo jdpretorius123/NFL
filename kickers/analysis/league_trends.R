@@ -61,7 +61,8 @@ kmeans_list = map(
   kmeans_data,
   kmeans_threshold,
   v = 'fg_att',
-  n = 2
+  n = 2,
+  iter = 50
 )
 
 kmeans_thresholds = enframe(

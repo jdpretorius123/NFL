@@ -348,6 +348,9 @@ dynamic_line_plot = function(df, x_cols, y_cols) {
   init_x = x_cols[1]
   init_y = y_cols[1]
   
+  init_x_label = create_label(init_x)
+  init_y_label = create_label(init_y)
+  
   p = plot_ly(
     data = df,
     x = ~get(init_x),
@@ -356,8 +359,8 @@ dynamic_line_plot = function(df, x_cols, y_cols) {
     mode = 'lines+markers',
     marker = list(size = 10, opacity = 0.5),
     hovertemplate = paste0(
-      create_label(init_x), ': %{x}<br>',
-      create_label(init_y), ': %{y}<extra></extra>'
+      init_x_label, ': %{x}<br>',
+      init_y_label, ': %{y}<extra></extra>'
     )
   )
   
@@ -366,7 +369,13 @@ dynamic_line_plot = function(df, x_cols, y_cols) {
     list(
       method = 'update',
       args = list(
-        list(y = list(df[[col]])),
+        list(
+          y = list(df[[col]]),
+          hovertemplate = paste0(
+            init_x_label, ':%{x}<br>',
+            y_label, ':%{y}<extra></extra>'
+          )
+        ),
         list(yaxis = list(title = y_label))
       ),
       label = y_label
@@ -378,7 +387,13 @@ dynamic_line_plot = function(df, x_cols, y_cols) {
     list(
       method = 'update',
       args = list(
-        list(x = list(df[[col]])),
+        list(
+          x = list(df[[col]]),
+          hovertemplate = paste0(
+            x_label, ':%{x}<br>',
+            init_y_label, ':%{y}<extra></extra>'
+          )
+        ),
         list(xaxis = list(title = x_label))
       ),
       label = x_label
@@ -421,15 +436,17 @@ dynamic_line_plot = function(df, x_cols, y_cols) {
 }
 # -------------------------------------------------------------------------
 # K-Means Threshold -------------------------------------------------------
-kmeans_threshold = function(df, v, n) {
+kmeans_threshold = function(df, v, n, iter) {
   #' Split a dataset (df) into clusters (n) using a variable (v) of choice
   #' 
   #' @param df Dataset
   #' @param column (character): String naming the variable of choice
   #' @param n (integer): Integer specifying the number of clusters to create
+  #' @param iter (integer): Integer specifying the number of kmeans iterations 
+  #'  to run to determine the best fit for the data
   #' @return threshold (integer): Integer representing the average of n
   #'  cluster centers
-  km = kmeans(df[[v]], centers = n)
+  km = kmeans(df[[v]], centers = n, nstart = iter)
   
   centers = sort(km$centers[,1])
   threshold = mean(centers)
@@ -486,7 +503,6 @@ dynamic_heatmap = function(df, x_col, metric_list) {
     showscale = FALSE,
     hovertemplate = paste0(
       'Season: %{x}<br>',
-      'Range: %{y}<br>',
       'Value: %{z:.2f}<extra></extra>'
     )
   ) %>%
