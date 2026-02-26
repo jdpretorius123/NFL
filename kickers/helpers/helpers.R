@@ -420,6 +420,23 @@ dynamic_line_plot = function(df, x_cols, y_cols) {
     )
 }
 # -------------------------------------------------------------------------
+# K-Means Threshold -------------------------------------------------------
+kmeans_threshold = function(df, v, n) {
+  #' Split a dataset (df) into clusters (n) using a variable (v) of choice
+  #' 
+  #' @param df Dataset
+  #' @param column (character): String naming the variable of choice
+  #' @param n (integer): Integer specifying the number of clusters to create
+  #' @return threshold (integer): Integer representing the average of n
+  #'  cluster centers
+  km = kmeans(df[[v]], centers = n)
+  
+  centers = sort(km$centers[,1])
+  threshold = mean(centers)
+  
+  return(threshold)
+}
+# -------------------------------------------------------------------------
 # Dynamic Heat Map --------------------------------------------------------
 dynamic_heatmap = function(df, x_col, metric_list) {
   #' Create a heat map that allows the user to assess lists of metrics

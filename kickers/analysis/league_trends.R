@@ -34,17 +34,14 @@ check_packages(packages)
 # -------------------------------------------------------------------------
 # Loading Helper Functions ------------------------------------------------
 
-helpers_file = here('helpers', 'helpers.R')
+helpers_file = here('kickers', 'helpers', 'helpers.R')
 source(helpers_file)
 
 # -------------------------------------------------------------------------
 # Loading Data ------------------------------------------------------------
 
-pbp_file = here('data', 'pp', 'pbp', 'pbp_pp.rdata')
+pbp_file = here('kickers', 'data', 'pp', 'pbp', 'pbp_pp.rdata')
 load(pbp_file)
-
-stats_file = here('data', 'pp', 'stats', 'stats_pp.rdata')
-load(stats_file)
 
 # -------------------------------------------------------------------------
 # Determining FGA Threshold per Season ------------------------------------
@@ -53,9 +50,9 @@ load(stats_file)
 set.seed(1)
 
 kmeans_data = pbp_pp %>%
-  group_by(season, kicker_name_clean) %>%
+  arrange(season, kicker_player_id, week, game_id, play_id) %>%
+  group_by(season, kicker_player_id) %>%
   summarise(fg_att = last(season_fg_attempt), .groups = 'drop') %>%
-  arrange(season) %>%
   dplyr::select(season, fg_att) %>%
   group_split(season)
 names(kmeans_data) = sort(unique(pbp_pp$season))
@@ -63,29 +60,29 @@ names(kmeans_data) = sort(unique(pbp_pp$season))
 kmeans_list = map(
   kmeans_data,
   kmeans_threshold,
-  column = 'fg_att',
+  v = 'fg_att',
   n = 2
 )
 
 kmeans_thresholds = enframe(
   kmeans_list,
   name = 'season',
-  value = 'split_point'
+  value = 'kmeans_threshold'
 ) %>%
-  unnest(cols = c(split_point)) %>%
-  mutate(season = as.integer(season)) %>%
-  rename(kmean_threshold = 'split_point')
+  unnest(cols = c(kmeans_threshold)) %>%
+  mutate(season = as.integer(season))
 
 #' 25th Quantile Breakpoints
 q25_data = pbp_pp %>%
-  group_by(season, kicker_name_clean) %>%
+  arrange(season, kicker_player_id, week, game_id, play_id) %>%
+  group_by(season, kicker_player_id) %>%
   summarise(fg_att = last(season_fg_attempt), .groups = 'drop') %>%
   dplyr::select(season, fg_att)
 
 q25_range = 1:25
 
-q25_grid = expand_grid(
-  season = sort(unique(q25_data$season)),
+q25_grid = expand_grid(season = sort(
+  unique(q25_data$season)),
   threshold = q25_range
 )
 
@@ -106,14 +103,16 @@ q25_thresholds = q25_grid %>%
   ) %>%
   ungroup()
 
+min_pct_change = 7
+
 q25_thresholds = q25_thresholds %>%
   group_by(season) %>%
   arrange(threshold) %>%
-  filter(pct_change > 5 | lead(pct_change) > 5) %>%
+  filter(pct_change > min_pct_change | lead(pct_change) > 5) %>%
   slice(1:2) %>%
   mutate(threshold_fga = mean(q25_fga, na.rm = TRUE)) %>%
   ungroup() %>%
-  dplyr::select(season, threshold_fga) %>% 
+  dplyr::select(season, threshold_fga) %>%
   distinct() %>%
   rename(q25_threshold = 'threshold_fga')
 
@@ -148,7 +147,7 @@ kicker_trends = pbp_pp %>%
     weight = last(weight),
     height = last(height),
     
-    total_fga = last(season_fg_attempt), 
+    total_fga = last(season_fg_attempt),
     fga_0_29 = sum(fga_0_29, na.rm = TRUE),
     fga_30_39 = sum(fga_30_39, na.rm = TRUE),
     fga_40_49 = sum(fga_40_49, na.rm = TRUE),
@@ -163,7 +162,7 @@ kicker_trends = pbp_pp %>%
     fgm_60_ = sum(fgm_60_, na.rm = TRUE),
     
     fg_pct = last(season_fg_pct),
-    fg_pct_0_29 = if_else(fga_0_29 != 0, fgm_0_29 / fga_0_29, 0), 
+    fg_pct_0_29 = if_else(fga_0_29 != 0, fgm_0_29 / fga_0_29, 0),
     fg_pct_30_39 = if_else(fga_30_39 != 0, fgm_30_39 / fga_30_39, 0),
     fg_pct_40_49 = if_else(fga_40_49 != 0, fgm_40_49 / fga_40_49, 0),
     fg_pct_50_59 = if_else(fga_50_59 != 0, fgm_50_59 / fga_50_59, 0),
@@ -173,7 +172,7 @@ kicker_trends = pbp_pp %>%
   ) %>%
   left_join(y = kmeans_thresholds, by = 'season') %>%
   group_by(season) %>%
-  filter(total_fga >= kmean_threshold) %>%
+  filter(total_fga >= kmeans_threshold) %>%
   ungroup()
 
 # -------------------------------------------------------------------------
@@ -199,7 +198,7 @@ league_trends = kicker_trends %>%
     fga_0_29 = sum(fga_0_29, na.rm = TRUE),
     fga_30_39 = sum(fga_30_39, na.rm = TRUE),
     fga_40_49 = sum(fga_40_49, na.rm = TRUE),
-    fga_50_59 = sum(fga_50_59, na.rm  = TRUE),
+    fga_50_59 = sum(fga_50_59, na.rm = TRUE),
     fga_60_ = sum(fga_60_, na.rm = TRUE),
     
     fgm_0_29 = sum(fgm_0_29, na.rm = TRUE),
@@ -222,6 +221,7 @@ league_trends = kicker_trends %>%
 # Saving the Analytic Data ------------------------------------------------
 
 kicker_trends_file = here(
+  'kickers',
   'data',
   'analytic',
   'kicker_trends',
@@ -229,6 +229,7 @@ kicker_trends_file = here(
 )
 
 league_trends_file = here(
+  'kickers',
   'data',
   'analytic',
   'league_trends',
