@@ -201,7 +201,7 @@ tagList(dynamic_line_plot(league_trends, x_cols, y_cols))
 Now that we have established that the data suggests modern day NFL kickers are becoming athletic freaks, let's dive into kicking related trends across the league.
 
 ## Kicking Trends
-Whether you're looking at the table or the charts, it is cut and dry that NFL kickers are getting more field goal attempts than ever. This is evident from the statistical significance of the league median field goal attempts (median_fga) per season. It's growing at a rate of 13.2% per year since 2001. I'm not going to ignore the 2017 season. It could be the outlier driving this trend. I mean, a difference of 1 between 2001 and 2025 isn't convincing.
+Whether you're looking at the table or the charts, it is cut and dry that NFL kickers are getting more field goal attempts than ever. This is evident from the statistical significance of the league median field goal attempts (median_fga) per season. It's growing at a rate of 0.132 attempts per year since 2001. I'm not going to ignore the 2017 season. It could be the outlier driving this trend. I mean, a difference of 1 between 2001 and 2025 isn't convincing.
 
 However, a quick sensitivity analysis reveals that this trend is robust.
 

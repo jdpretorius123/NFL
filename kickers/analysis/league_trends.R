@@ -1,7 +1,5 @@
 # Loading Dependencies ----------------------------------------------------
 
-rm(list = ls())
-
 packages = c(
   'tidyverse',
   'broom',
