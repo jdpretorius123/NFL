@@ -43,6 +43,15 @@ source(helpers_file)
 pbp_file = here('kickers', 'data', 'pp', 'pbp', 'pbp_pp.rdata')
 load(pbp_file)
 
+league_trends_file = here(
+  'kickers',
+  'data',
+  'analytic',
+  'league_trends',
+  'league_trends.rdata'
+)
+load(league_trends_file)
+
 kicker_trends_file = here(
   'kickers',
   'data',
@@ -53,23 +62,37 @@ kicker_trends_file = here(
 load(kicker_trends_file)
 
 # -------------------------------------------------------------------------
-# Creating the Team Trends Dataset ----------------------------------------
+# Determining the Starter Coverage per Season -----------------------------
 
-temp = kicker_trends %>%
-  dplyr::select(-kmeans_threshold) %>%
-  left_join(
-    y = pbp_pp %>%
-      dplyr::select(season, posteam, kicker_player_id) %>%
-      rename(team = 'posteam') %>%
-      distinct(),
-    by = join_by(season, kicker_player_id)
-  ) 
+nfl_total_fga = pbp_pp %>%
+  group_by(season) %>%
+  summarise(nfl_total_fga = n(), .groups = 'drop')
+
+starter_coverage = league_trends %>%
+  left_join(y = nfl_total_fga, by = join_by(season)) %>%
+  mutate(
+    total_fga = fga_0_29 + fga_30_39 + fga_40_49 + fga_50_59 + fga_60_,
+    starter_coverage = (total_fga/nfl_total_fga) * 100
+  )
 
 # -------------------------------------------------------------------------
-# Applying Season FGA Thresholds and Calculating FG% by Distance ----------
+# Creating the Team Trends Dataset ----------------------------------------
 
-kicker_trends = pbp_pp %>%
-  arrange(season, kicker_player_id, week, game_id, play_id) %>%
+team_demos = pbp_pp %>%
+  arrange(season, posteam, week, game_id, play_id) %>%
+  dplyr::select(season, posteam, kicker_player_id, age, height, weight) %>%
+  distinct() %>%
+  group_by(season, team = posteam) %>%
+  summarise(
+    n_kickers = n_distinct(kicker_player_id),
+    mean_age = mean(age, na.rm = TRUE),
+    mean_weight = mean(weight, na.rm = TRUE),
+    mean_height = mean(height, na.rm = TRUE),
+    .groups = 'drop'
+  )
+
+team_stats = pbp_pp %>%
+  arrange(season, posteam, week, game_id, play_id) %>%
   mutate(
     fga_0_29 = if_else(kick_distance < 30, 1, 0),
     fga_30_39 = if_else(kick_distance >= 30 & kick_distance < 40, 1, 0),
@@ -83,13 +106,13 @@ kicker_trends = pbp_pp %>%
     fgm_50_59 = if_else(fga_50_59 == 1 & fg_result_clean == 'made', 1, 0),
     fgm_60_ = if_else(fga_60_ == 1 & fg_result_clean == 'made', 1, 0)
   ) %>%
-  group_by(season, kicker_name_clean, kicker_player_id) %>%
+  group_by(season, team = posteam) %>%
   summarise(
-    age = last(age),
-    weight = last(weight),
-    height = last(height),
+    med_kick_dst = median(kick_distance, na.rm = TRUE),
+    med_score_diff = median(score_differential, na.rm = TRUE),
+    goal_to_go = sum(goal_to_go, na.rm = TRUE),
     
-    total_fga = last(season_fg_attempt),
+    total_fga = n(),
     fga_0_29 = sum(fga_0_29, na.rm = TRUE),
     fga_30_39 = sum(fga_30_39, na.rm = TRUE),
     fga_40_49 = sum(fga_40_49, na.rm = TRUE),
@@ -103,109 +126,56 @@ kicker_trends = pbp_pp %>%
     fgm_50_59 = sum(fgm_50_59, na.rm = TRUE),
     fgm_60_ = sum(fgm_60_, na.rm = TRUE),
     
-    fg_pct = last(season_fg_pct),
-    fg_pct_0_29 = if_else(fga_0_29 != 0, fgm_0_29 / fga_0_29, 0),
-    fg_pct_30_39 = if_else(fga_30_39 != 0, fgm_30_39 / fga_30_39, 0),
-    fg_pct_40_49 = if_else(fga_40_49 != 0, fgm_40_49 / fga_40_49, 0),
-    fg_pct_50_59 = if_else(fga_50_59 != 0, fgm_50_59 / fga_50_59, 0),
-    fg_pct_60_ = if_else(fga_60_ != 0, fgm_60_ / fga_60_, 0),
-    
-    .groups = 'drop'
-  ) %>%
-  left_join(y = kmeans_thresholds, by = 'season') %>%
-  group_by(season) %>%
-  filter(total_fga >= kmeans_threshold) %>%
-  ungroup()
-
-# -------------------------------------------------------------------------
-# Calculating League FG% by Distance --------------------------------------
-
-median_kick_dst = pbp_pp %>%
-  semi_join(y = kicker_trends, by = join_by(season, kicker_player_id)) %>%
-  group_by(season) %>%
-  summarise(
-    median_kick_dst = median(kick_distance, na.rm = TRUE),
     .groups = 'drop'
   )
 
-league_trends = kicker_trends %>%
-  group_by(season) %>%
+conditions_vars = c(
+  'season',
+  'posteam',
+  'week',
+  'wind_clean',
+  'temp_clean',
+  'weather_clean',
+  'surface_clean',
+  'roof_clean',
+  'start_time_clean'
+)
+team_conditions = pbp_pp %>%
+  arrange(season, posteam, week, game_id, play_id) %>%
+  dplyr::select(all_of(conditions_vars)) %>%
+  distinct() %>%
+  group_by(season, team = posteam) %>%
   summarise(
-    median_age = median(age, na.rm = TRUE),
-    median_height = median(height, na.rm = TRUE),
-    median_weight = median(weight, na.rm = TRUE),
+    med_wind = median(wind_clean, na.rm = TRUE),
+    med_temp = median(temp_clean, na.rm = TRUE),
     
-    median_fga = median(total_fga, na.rm = TRUE),
+    bad_wthr_games = sum(weather_clean == 'bad', na.rm = TRUE),
+    decent_wthr_games = sum(weather_clean == 'decent', na.rm = TRUE),
+    good_wthr_games = sum(weather_clean == 'good', na.rm = TRUE),
     
-    fga_0_29 = sum(fga_0_29, na.rm = TRUE),
-    fga_30_39 = sum(fga_30_39, na.rm = TRUE),
-    fga_40_49 = sum(fga_40_49, na.rm = TRUE),
-    fga_50_59 = sum(fga_50_59, na.rm = TRUE),
-    fga_60_ = sum(fga_60_, na.rm = TRUE),
+    grass_fields = sum(surface_clean == 'grass', na.rm = TRUE),
+    turf_fields = sum(surface_clean == 'turf', na.rm = TRUE),
     
-    fgm_0_29 = sum(fgm_0_29, na.rm = TRUE),
-    fgm_30_39 = sum(fgm_30_39, na.rm = TRUE),
-    fgm_40_49 = sum(fgm_40_49, na.rm = TRUE),
-    fgm_50_59 = sum(fgm_50_59, na.rm = TRUE),
-    fgm_60_ = sum(fgm_60_, na.rm = TRUE),
+    indoor_games = sum(roof_clean == 'indoors', na.rm = TRUE),
+    outdoor_games = sum(roof_clean == 'outdoors', na.rm = TRUE),
     
-    fg_pct_0_29 = if_else(fga_0_29 != 0, fgm_0_29 / fga_0_29, 0),
-    fg_pct_30_39 = if_else(fga_30_39 != 0, fgm_30_39 / fga_30_39, 0),
-    fg_pct_40_49 = if_else(fga_40_49 != 0, fgm_40_49 / fga_40_49, 0),
-    fg_pct_50_59 = if_else(fga_50_59 != 0, fgm_50_59 / fga_50_59, 0),
-    fg_pct_60_ = if_else(fga_60_ != 0, fgm_60_ / fga_60_, 0),
+    morning_games = sum(start_time_clean == 'morning', na.rm = TRUE),
+    afternoon_games = sum(start_time_clean == 'afternoon', na.rm = TRUE),
+    night_games = sum(start_time_clean == 'night', na.rm = TRUE),
     
     .groups = 'drop'
-  ) %>%
-  left_join(y = median_kick_dst, by = 'season')
+  )
+
+team_trends = team_stats %>%
+  inner_join(y = team_demos, by = join_by(season, team)) %>%
+  inner_join(y = team_conditions, by = join_by(season, team))
 
 # -------------------------------------------------------------------------
-# Saving the Analytic Data ------------------------------------------------
+# Miscellaneous -----------------------------------------------------------
 
-kicker_trends_file = here(
-  'kickers',
-  'data',
-  'analytic',
-  'kicker_trends',
-  'kicker_trends.rdata'
-)
-
-league_trends_file = here(
-  'kickers',
-  'data',
-  'analytic',
-  'league_trends',
-  'league_trends.rdata'
-)
-
-if (file.exists(kicker_trends_file)) {
-  file.remove(kicker_trends_file)
-  cat(basename(kicker_trends_file), 'has been deleted.\n')
-} else {
-  cat(basename(kicker_trends_file), 'not found.\n')
-}
-
-cat('Saving a new copy...\n')
-save(kicker_trends, file = kicker_trends_file)
-if (file.exists(kicker_trends_file)) {
-  cat(basename(kicker_trends_file), 'has been saved.\n')
-} else {
-  cat('Unable to save', basename(kicker_trends_file), '\n')
-}
-
-if (file.exists(league_trends_file)) {
-  file.remove(league_trends_file)
-  cat(basename(league_trends_file), 'has been deleted.\n')
-} else {
-  cat(basename(league_trends_file), 'not found.\n')
-}
-
-cat('Saving a new copy...\n')
-save(league_trends, file = league_trends_file)
-if (file.exists(league_trends_file)) {
-  cat(basename(league_trends_file), 'has been saved.\n')
-} else {
-  cat('Unable to save', basename(league_trends_file), '\n')
-}
+y_cols = colnames(team_trends)[
+  colnames(team_trends) != 'season' & colnames(team_trends) != 'team'
+]
+dynamic_violin(team_trends, c('season'), y_cols)
 
 # -------------------------------------------------------------------------

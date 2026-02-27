@@ -167,13 +167,25 @@ dynamic_violin = function(df, x_cols, y_cols) {
   init_x = x_cols[1] 
   init_y = y_cols[1]
   
-  p = plot_ly(
-    data = df,
-    x = ~get(init_x),
-    y = ~get(init_y),
-    type = 'violin',
-    points = FALSE,
-    meanline = list(visible = TRUE)
+  init_x_label = create_label(init_x)
+  init_y_label = create_label(init_y)
+  
+  p = plot_ly() %>%
+    add_trace(
+      type = 'violin',
+      
+    x = df[[init_x]],
+    y = df[[init_y]],
+    text = df[['team']],
+    points = 'all',
+    hoveron = 'points+violins',
+    meanline = list(visible = TRUE),
+    marker = list(opacity = 0.5),
+    hovertemplate = paste0(
+      init_x_label, ': %{x}<br>',
+      init_y_label, ': %{y}<br>',
+      'Team: %{text}<extra></extra>'
+    )
   )
   
   y_buttons = lapply(y_cols, function(col) {
@@ -181,7 +193,15 @@ dynamic_violin = function(df, x_cols, y_cols) {
     list (
       method = 'update',
       args = list(
-        list(y = list(df[[col]])),
+        list(
+          y = list(df[[col]]),
+          text = list(df[['team']]),
+          hovertemplate = paste0(
+            init_x_label, ':%{x}<br>',
+            y_label, ':%{y}<br>',
+            'Team: %{text}<extra></extra>'
+          )
+        ),
         list(yaxis = list(title = y_label))
       ),
       label = y_label
@@ -193,7 +213,15 @@ dynamic_violin = function(df, x_cols, y_cols) {
     list(
       method = 'update',
       args = list(
-        list(x = list(df[[col]])),
+        list(
+          x = list(df[[col]]),
+          text = list(df[['team']]),
+          hovertemplate = paste0(
+            x_label, ':%{x}<br>',
+            init_y_label, ':%{y}<br>',
+            'Team: %{text}<extra></extra>'
+          )
+        ),
         list(xaxis = list(title = x_label))
       ),
       label = x_label
@@ -244,28 +272,47 @@ dynamic_scatter_plot = function(df, x_cols, y_cols) {
   #' @param y_cols (character): Vector naming y-axis variables of interest
   #' @return p Interactive plotly scatter plot with a dropdown menu for variable
   #'  selection
-  init_x = x_cols[1]
+  init_x = x_cols[1] 
   init_y = y_cols[1]
   
-  p = plot_ly(
-    data = df,
-    x = ~get(init_x),
-    y = ~get(init_y),
-    type = 'scatter',
-    mode = 'markers',
-    marker = list(size = 10, opacity = 0.5),
-    hovertemplate = paste0(
-      create_label(init_x), ': %{x}<br>',
-      create_label(init_y), ': %{y}<extra></extra>'
+  init_x_label = create_label(init_x)
+  init_y_label = create_label(init_y)
+  
+  p = plot_ly(data = df) %>%
+    add_trace(
+      type = 'violin',
+      x = df[[init_x]],
+      y = df[[init_y]],
+      text = df[['team']],
+      points = 'all',
+      jitter = 0.3,           
+      pointpos = -1.5,        
+      marker = list(opacity = 0.5),
+      line = list(color = 'blue'),
+      meanline = list(visible = TRUE),
+      hoveron = 'points', 
+      hoverinfo = 'text',
+      hovertemplate = paste0(
+        init_x_label, ': %{x}<br>',
+        init_y_label, ': %{y}<br>',
+        'Team: %{text}<extra></extra>'
+      )
     )
-  )
   
   y_buttons = lapply(y_cols, function(col) {
     y_label = create_label(col)
     list(
       method = 'update',
       args = list(
-        list(y = list(df[[col]])),
+        list(
+          y = list(df[[col]]),
+          text = list(df[['team']]),
+          hovertemplate = paste0(
+            init_x_label, ': %{x}<br>',
+            , y_label, ': %{y}<br>',
+            'Team: %{text}<extra></extra>'
+          )
+        ),
         list(yaxis = list(title = y_label))
       ),
       label = y_label
@@ -277,44 +324,51 @@ dynamic_scatter_plot = function(df, x_cols, y_cols) {
     list(
       method = 'update',
       args = list(
-        list(x = list(df[[col]])),
+        list(
+          x = list(df[[col]]),
+          text = list(df[['team']]),
+          hovertemplate = paste0(
+            x_label, ': %{x}<br>',
+            init_y_label, ': %{y}<br>',
+            'Team: %{text}<extra></extra>'
+          )
+        ),
         list(xaxis = list(title = x_label))
       ),
       label = x_label
     )
   })
   
-  p %>%
-    layout(
-      xaxis = list(title = create_label(init_x)),
-      yaxis = list(title = create_label(init_y)),
-      showlegend = FALSE,
-      margin = list(r = 150),
-      updatemenus = list(
-        list(
-          buttons = y_buttons,
-          x = 1.05, y = 0.8,
-          xanchor = 'left', yanchor = 'top'
-        ),
-        list(
-          buttons = x_buttons,
-          x = 1.05, y = 0.5,
-          xanchor = 'left', yanchor = 'top'
-        )
+  p %>% layout(
+    xaxis = list(title = init_x_label),
+    yaxis = list(title = init_y_label),
+    showlegend = FALSE,
+    margin = list(r = 150),
+    updatemenus = list(
+      list(
+        buttons = y_buttons, 
+        x = 1.05, y = 0.8, 
+        xanchor = 'left', yanchor = 'top'
+      ),
+      list(
+        buttons = x_buttons,
+        x = 1.05, y = 0.5, 
+        xanchor = 'left', yanchor = 'top'
       )
-    ) %>%
+    )
+  ) %>%
     add_annotations(
-      text = '<b>Select Y:</b>',
-      x = 1.05, y = 0.85,
+      text = '<b>Select Y:</b>', 
+      x = 1.05, y = 0.85, 
       xref = 'paper', yref = 'paper',
-      xanchor = 'left', yanchor = 'bottom',
+      xanchor = 'left', yanchor = 'bottom', 
       showarrow = FALSE
     ) %>%
     add_annotations(
-      text = '<b>Select X:</b>',
-      x = 1.05, y = 0.55,
+      text = '<b>Select X:</b>', 
+      x = 1.05, y = 0.55, 
       xref = 'paper', yref = 'paper',
-      xanchor = 'left', yanchor = 'bottom',
+      xanchor = 'left', yanchor = 'bottom', 
       showarrow = FALSE
     )
 }
