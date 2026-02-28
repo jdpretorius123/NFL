@@ -3,6 +3,7 @@
 rm(list = ls())
 
 packages = c(
+  'car',
   'tidyverse',
   'broom',
   'here',
@@ -171,11 +172,48 @@ team_trends = team_stats %>%
   inner_join(y = team_conditions, by = join_by(season, team))
 
 # -------------------------------------------------------------------------
-# Miscellaneous -----------------------------------------------------------
+# Visualizations ----------------------------------------------------------
 
 y_cols = colnames(team_trends)[
   colnames(team_trends) != 'season' & colnames(team_trends) != 'team'
 ]
 dynamic_violin(team_trends, c('season'), y_cols)
 
+team_info = load_teams() %>%
+  dplyr::select(team_abbr, team_color, team_color2)
+nfl_colors = team_info$team_color
+names(nfl_colors) = team_info$team_abbr
+
+nfl_teams_line_plot(team_trends, y_cols)
+nfl_teams_heatmap(team_trends, y_cols)
 # -------------------------------------------------------------------------
+# ANOVA Testing -----------------------------------------------------------
+
+test_vars = y_cols
+anova_results = test_vars %>%
+  map_df(function(var) {
+    formula = as.formula(paste(var, '~ season*team'))
+    model = lm(
+      formula, 
+      data = team_trends, 
+      contrasts = list(team = contr.sum)
+    )
+    
+    car::Anova(model, type = 'III') %>%
+      tidy() %>%
+      mutate(variable = var)
+  })
+
+n = length(test_vars)
+anova_results = anova_results %>%
+  filter(term %in% c('team', 'team:season')) %>%
+  group_by(term) %>%
+  mutate(
+    p_bnfrrni = p.adjust(p.value, method = 'bonferroni', n = n),
+    sig = p_bnfrrni < 0.05
+  ) %>%
+  arrange(term, p_bnfrrni)
+
+# -------------------------------------------------------------------------
+
+

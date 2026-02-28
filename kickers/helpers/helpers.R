@@ -163,115 +163,6 @@ dynamic_violin = function(df, x_cols, y_cols) {
   #' @param y_cols (character): Vector naming numeric variables of interest
   #' @return p Interactive plotly violin chart with a dropdown menu for variable
   #'  selection
-  
-  init_x = x_cols[1] 
-  init_y = y_cols[1]
-  
-  init_x_label = create_label(init_x)
-  init_y_label = create_label(init_y)
-  
-  p = plot_ly() %>%
-    add_trace(
-      type = 'violin',
-      
-    x = df[[init_x]],
-    y = df[[init_y]],
-    text = df[['team']],
-    points = 'all',
-    hoveron = 'points+violins',
-    meanline = list(visible = TRUE),
-    marker = list(opacity = 0.5),
-    hovertemplate = paste0(
-      init_x_label, ': %{x}<br>',
-      init_y_label, ': %{y}<br>',
-      'Team: %{text}<extra></extra>'
-    )
-  )
-  
-  y_buttons = lapply(y_cols, function(col) {
-    y_label = create_label(col)
-    list (
-      method = 'update',
-      args = list(
-        list(
-          y = list(df[[col]]),
-          text = list(df[['team']]),
-          hovertemplate = paste0(
-            init_x_label, ':%{x}<br>',
-            y_label, ':%{y}<br>',
-            'Team: %{text}<extra></extra>'
-          )
-        ),
-        list(yaxis = list(title = y_label))
-      ),
-      label = y_label
-    )
-  })
-  
-  x_buttons = lapply(x_cols, function(col) {
-    x_label = create_label(col)
-    list(
-      method = 'update',
-      args = list(
-        list(
-          x = list(df[[col]]),
-          text = list(df[['team']]),
-          hovertemplate = paste0(
-            x_label, ':%{x}<br>',
-            init_y_label, ':%{y}<br>',
-            'Team: %{text}<extra></extra>'
-          )
-        ),
-        list(xaxis = list(title = x_label))
-      ),
-      label = x_label
-    )
-  })
-  
-  p %>% layout(
-    xaxis = list(title = create_label(init_x)),
-    yaxis = list(title = create_label(init_y)),
-    showlegend = FALSE,
-    margin = list(r = 150),
-    updatemenus = list(
-      list(
-        buttons = y_buttons,
-        x = 1.05, y = 0.8, 
-        xanchor = 'left', yanchor = 'top'
-      ),
-      list(
-        buttons = x_buttons,
-        x = 1.05, y = 0.5,
-        xanchor = 'left', yanchor = 'top'
-      )
-    )
-  ) %>%
-    add_annotations(
-      text = '<b>Select Y:</b>',
-      x = 1.05, y = 0.85, 
-      xref = 'paper', yref = 'paper',
-      xanchor = 'left', yanchor = 'bottom',
-      showarrow = FALSE
-    ) %>%
-    add_annotations(
-      text = '<b>Select X:</b>',
-      x = 1.05, y = 0.55,
-      xref = 'paper', yref = 'paper',
-      xanchor = 'left', yanchor = 'bottom',
-      showarrow = FALSE
-    )
-}
-# -------------------------------------------------------------------------
-# Dynamic Scatter Plot ----------------------------------------------------
-dynamic_scatter_plot = function(df, x_cols, y_cols) {
-  #' Create scatter plots using a dataset (df) and any numeric cols (x_cols and
-  #' y_cols) that you fancy.
-  #'
-  #' @param df Dataset
-  #' @param x_cols (character): Vector naming x-axis variables of interest
-  #' @param y_cols (character): Vector naming y-axis variables of interest
-  #' @return p Interactive plotly scatter plot with a dropdown menu for variable
-  #'  selection
   init_x = x_cols[1] 
   init_y = y_cols[1]
   
@@ -280,37 +171,51 @@ dynamic_scatter_plot = function(df, x_cols, y_cols) {
   
   p = plot_ly(data = df) %>%
     add_trace(
-      type = 'violin',
       x = df[[init_x]],
       y = df[[init_y]],
       text = df[['team']],
-      points = 'all',
-      jitter = 0.3,           
-      pointpos = -1.5,        
-      marker = list(opacity = 0.5),
-      line = list(color = 'blue'),
+      type = 'violin',
+      points = FALSE,
+      hoverinfo = 'skip',
       meanline = list(visible = TRUE),
-      hoveron = 'points', 
-      hoverinfo = 'text',
+      marker = list(opacity = 0),
+      line = list(color = 'black', width = 1),
+      fillcolor = 'rgba(100, 150, 250, 0.4)'
+    ) %>%
+    add_trace(
+      x = df[[init_x]],
+      y = df[[init_y]],
+      type = 'scatter',
+      mode = 'markers',
+      marker = list(
+        color = 'black',
+        size = 5,
+        opacity = 0.5,
+        jitter = 0.3,
+        pointpos = 0
+      ),
+      customdata = df[['team']],
       hovertemplate = paste0(
         init_x_label, ': %{x}<br>',
         init_y_label, ': %{y}<br>',
-        'Team: %{text}<extra></extra>'
+        'Team: %{customdata}<extra></extra>'
       )
     )
   
   y_buttons = lapply(y_cols, function(col) {
     y_label = create_label(col)
-    list(
+    list (
       method = 'update',
       args = list(
         list(
-          y = list(df[[col]]),
-          text = list(df[['team']]),
-          hovertemplate = paste0(
-            init_x_label, ': %{x}<br>',
-            , y_label, ': %{y}<br>',
-            'Team: %{text}<extra></extra>'
+          y = list(df[[col]], df[[col]]),
+          hovertemplate = list(
+            NULL,
+            paste0(
+              init_x_label, ': %{x}<br>',
+              y_label, ': %{y}<br>',
+              'Team: %{customdata}<extra></extra>'
+            )
           )
         ),
         list(yaxis = list(title = y_label))
@@ -325,12 +230,15 @@ dynamic_scatter_plot = function(df, x_cols, y_cols) {
       method = 'update',
       args = list(
         list(
-          x = list(df[[col]]),
+          x = list(df[[col]], df[[col]]),
           text = list(df[['team']]),
-          hovertemplate = paste0(
-            x_label, ': %{x}<br>',
-            init_y_label, ': %{y}<br>',
-            'Team: %{text}<extra></extra>'
+          hovertemplate = list(
+            NULL,
+            paste0(
+              x_label, ': %{x}<br>',
+              init_y_label, ': %{y}<br>',
+              'Team: %{customdata}<extra></extra>'
+            )
           )
         ),
         list(xaxis = list(title = x_label))
@@ -352,7 +260,7 @@ dynamic_scatter_plot = function(df, x_cols, y_cols) {
       ),
       list(
         buttons = x_buttons,
-        x = 1.05, y = 0.5, 
+        x = 1.05, y = 0.5,
         xanchor = 'left', yanchor = 'top'
       )
     )
@@ -369,6 +277,106 @@ dynamic_scatter_plot = function(df, x_cols, y_cols) {
       x = 1.05, y = 0.55, 
       xref = 'paper', yref = 'paper',
       xanchor = 'left', yanchor = 'bottom', 
+      showarrow = FALSE
+    )
+}
+# -------------------------------------------------------------------------
+# Dynamic Scatter Plot ----------------------------------------------------
+dynamic_scatter_plot = function(df, x_cols, y_cols) {
+  #' Create scatter plots using a dataset (df) and any numeric cols (x_cols and
+  #' y_cols) that you fancy.
+  #'
+  #' @param df Dataset
+  #' @param x_cols (character): Vector naming x-axis variables of interest
+  #' @param y_cols (character): Vector naming y-axis variables of interest
+  #' @return p Interactive plotly scatter plot with a dropdown menu for variable
+  #'  selection
+  init_x = x_cols[1]
+  init_y = y_cols[1]
+  
+  init_x_label = create_label(init_x)
+  init_y_label = create_label(init_y)
+  
+  p = plot_ly(
+    data = df,
+    x = ~get(init_x),
+    y = ~get(init_y),
+    type = 'scatter',
+    mode = 'markers',
+    marker = list(size = 10, opacity = 0.5),
+    hovertemplate = paste0(
+      init_x_label, ': %{x}<br>',
+      init_y_label, ': %{y}<extra></extra>'
+    )
+  )
+  
+  y_buttons = lapply(y_cols, function(col) {
+    y_label = create_label(col)
+    list(
+      method = 'update',
+      args = list(
+        list(
+          y = list(df[[col]]),
+          hovertemplate = paste0(
+            init_x_label, ':%{x}<br>',
+            y_label, ':%{y}<extra></extra>'
+          )
+        ),
+        list(yaxis = list(title = y_label))
+      ),
+      label = y_label
+    )
+  })
+  
+  x_buttons = lapply(x_cols, function(col) {
+    x_label = create_label(col)
+    list(
+      method = 'update',
+      args = list(
+        list(
+          x = list(df[[col]]),
+          hovertemplate = paste0(
+            x_label, ':%{x}<br>',
+            init_y_label, ':%{y}<extra></extra>'
+          )
+        ),
+        list(xaxis = list(title = x_label))
+      ),
+      label = x_label
+    )
+  })
+  
+  p %>%
+    layout(
+      xaxis = list(title = create_label(init_x)),
+      yaxis = list(title = create_label(init_y)),
+      showlegend = FALSE,
+      margin = list(r = 150),
+      updatemenus = list(
+        list(
+          buttons = y_buttons,
+          x = 1.05, y = 0.8,
+          xanchor = 'left', yanchor = 'top'
+        ),
+        list(
+          buttons = x_buttons,
+          x = 1.05, y = 0.5,
+          xanchor = 'left', yanchor = 'top'
+        )
+      )
+    ) %>%
+    add_annotations(
+      text = '<b>Select Y:</b>',
+      x = 1.05, y = 0.85,
+      xref = 'paper', yref = 'paper',
+      xanchor = 'left', yanchor = 'bottom',
+      showarrow = FALSE
+    ) %>%
+    add_annotations(
+      text = '<b>Select X:</b>',
+      x = 1.05, y = 0.55,
+      xref = 'paper', yref = 'paper',
+      xanchor = 'left', yanchor = 'bottom',
       showarrow = FALSE
     )
 }
@@ -564,6 +572,187 @@ dynamic_heatmap = function(df, x_col, metric_list) {
       xaxis = list(title = create_label(x_col), dtick = 1),
       yaxis = list(title = init_metric_name, autorange = 'reversed'),
       margin = list(l = 120, r = 150, b = 50, t = 50),
+      updatemenus = list(
+        list(
+          buttons = metric_buttons,
+          x = 1.05, y = 0.8,
+          xanchor = 'left', yanchor = 'top'
+        )
+      )
+    ) %>%
+    add_annotations(
+      text = '<b>Select Metric:</b>',
+      x = 1.05, y = 0.85,
+      xref = 'paper', yref = 'paper',
+      xanchor = 'left', yanchor = 'bottom',
+      showarrow = FALSE
+    )
+}
+# -------------------------------------------------------------------------
+# NFL Teams Line Plot -----------------------------------------------
+nfl_teams_line_plot = function(df, y_cols) {
+  #' Create line plots using a dataset (df) and the numeric cols (y_cols) that 
+  #' you fancy.
+  #'
+  #' @param df Dataset
+  #' @param y_cols (character): Vector naming y-axis variables of interest
+  #' @return p Interactive plotly line plot with a dropdown menu for variable
+  #'  selection
+  df = df %>%
+    arrange(season, team)
+  
+  init_y = y_cols[1]
+  init_y_label = create_label(init_y)
+  
+  team_info = nflreadr::load_teams() %>%
+    dplyr::select(team_abbr, team_color, team_color2)
+  nfl_colors = team_info$team_color
+  names(nfl_colors) = team_info$team_abbr
+  
+  teams = sort(unique(df[['team']]))
+  n_teams = length(teams)
+  
+  init_vis = as.list(c(TRUE, rep(FALSE, n_teams - 1)))
+  
+  p = plot_ly(
+    data = df,
+    x = ~get('season'),
+    y = ~get(init_y),
+    color = ~get('team'),
+    colors = nfl_colors,
+    type = 'scattergl',
+    mode = 'lines+markers',
+    visible = init_vis,
+    hovertemplate = paste0(
+      '%{fullData.name}<br>',
+      'Season: %{x}<br>',
+      init_y_label, ': %{y}<extra></extra>'
+    )
+  ) %>%
+    style(visible = FALSE, traces = 2:n_teams) %>%
+    style(visible = TRUE, traces = 1)
+  
+  y_buttons = lapply(y_cols, function(col) {
+    y_label = create_label(col)
+    list(
+      method = 'restyle',
+      args = list( 
+        list(
+          y = rep( list(df[[col]]), n_teams),
+          hovertemplate = paste0(
+            '%{fullData.name}<br>',
+            'Season: %{x}<br>',
+            y_label, ': %{y}<extra></extra>'
+          )
+        )
+      ),
+      label = y_label
+    )
+  })
+  
+  team_buttons = lapply(seq_along(teams), function(i) {
+    vis_vector = rep(FALSE, n_teams)
+    vis_vector[i] = TRUE
+    list(
+      method = 'restyle',
+      args = list('visible', as.list(vis_vector)),
+      label = teams[i]
+    )
+  })
+  
+  p %>%
+    layout(
+      xaxis = list(title = 'Season', tickmode = 'linear', dtick = 1),
+      yaxis = list(title = init_y_label),
+      showlegend = FALSE,
+      hovermode = 'closest',
+      margin = list(r = 160, t = 50),
+      updatemenus = list(
+        list(
+          buttons = team_buttons,
+          x = 1.05, y = 0.8,
+          xanchor = 'left', yanchor = 'top'
+        ),
+        list(
+          buttons = y_buttons,
+          x = 1.05, y = 0.5,
+          xanchor = 'left', yanchor = 'top'
+        )
+      )
+    ) %>%
+    add_annotations(
+      text = c('<b>Select Team:</b>', '<b>Select Y:</b>'),
+      x = 1.05, y = c(0.85, 0.55),
+      xref = 'paper', yref = 'paper',
+      xanchor = 'left', yanchor = 'bottom',
+      showarrow = FALSE
+    )
+}
+# -------------------------------------------------------------------------
+# NFL Teams Heat Map ------------------------------------------------------
+nfl_teams_heatmap = function(df, metric_list) {
+  #' Create a heat map that allows the user to assess lists of metrics
+  #' (metric_list) within a dataframe (df)
+  #' 
+  #' @param df Dataset
+  #' @param metric_list (list): A named list where each element is a vector of 
+  #'  columns within df
+  #' @return Interactive heat map with a dropdown menu for selecting multiple
+  #'  columns within df
+  seasons = sort(unique(df$season))
+  teams = sort(unique(df$team))
+  
+  get_z_matrix = function(met) {
+    mat_df = df %>%
+      dplyr::select(all_of(c('team', 'season', met))) %>%
+      pivot_wider(names_from = all_of('season'), values_from = all_of(met)) %>%
+      arrange(get('team')) %>%
+      select(-all_of('team'))
+    
+    return(as.matrix(mat_df))
+  }
+  
+  init_metric = metric_list[1]
+  init_z = get_z_matrix(init_metric)
+
+  p = plot_ly(
+    x = seasons,
+    y = teams,
+    z = init_z,
+    type = 'heatmap',
+    colorscale = 'Viridis',
+    reversescale = FALSE,
+    showscale = FALSE,
+    hovertemplate = paste0(
+      'Team: %{y}<br>',
+      'Season: %{x}<br>',
+      'Value: %{z:.2f}<extra></extra>'
+    )
+  )
+  
+  metric_buttons = lapply(metric_list, function(met) {
+    met_label = create_label(met)
+    list(
+      method = 'restyle',
+      args = list(
+        list(
+          z = list(get_z_matrix(met)),
+          hovertemplate = paste0(
+            'Team: %{y}<br>',
+            'Season: %{x}<br>',
+            met_label, ': %{z}<extra></extra>'
+          )
+        )
+      ),
+      label = met_label
+    )
+  })
+  
+  p %>%
+    layout(
+      xaxis = list(title = 'Season', dtick = 1, side = 'bottom'),
+      yaxis = list(title = '', autorange = 'reversed'),
+      margin = list(l = 150, r = 50, b = 50, t = 50),
       updatemenus = list(
         list(
           buttons = metric_buttons,
