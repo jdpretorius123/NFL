@@ -150,21 +150,35 @@ team_conditions = pbp_pp %>%
     med_wind = median(wind_clean, na.rm = TRUE),
     med_temp = median(temp_clean, na.rm = TRUE),
     
-    bad_wthr_games = sum(weather_clean == 'bad', na.rm = TRUE),
-    decent_wthr_games = sum(weather_clean == 'decent', na.rm = TRUE),
-    good_wthr_games = sum(weather_clean == 'good', na.rm = TRUE),
+    bad_wthr_gms = sum(weather_clean == 'bad', na.rm = TRUE),
+    decent_wthr_gms = sum(weather_clean == 'decent', na.rm = TRUE),
+    good_wthr_gms = sum(weather_clean == 'good', na.rm = TRUE),
+    prop_bad_wthr_gms = bad_wthr_gms / (decent_wthr_gms + good_wthr_gms),
     
-    grass_fields = sum(surface_clean == 'grass', na.rm = TRUE),
-    turf_fields = sum(surface_clean == 'turf', na.rm = TRUE),
+    grass_flds = sum(surface_clean == 'grass', na.rm = TRUE),
+    turf_flds = sum(surface_clean == 'turf', na.rm = TRUE),
+    prop_grass_flds = grass_flds / (grass_flds + turf_flds),
     
-    indoor_games = sum(roof_clean == 'indoors', na.rm = TRUE),
-    outdoor_games = sum(roof_clean == 'outdoors', na.rm = TRUE),
+    indoor_gms = sum(roof_clean == 'indoors', na.rm = TRUE),
+    outdoor_gms = sum(roof_clean == 'outdoors', na.rm = TRUE),
+    prop_outdoor_gms = outdoor_gms / (indoor_gms + outdoor_gms),
     
-    morning_games = sum(start_time_clean == 'morning', na.rm = TRUE),
-    afternoon_games = sum(start_time_clean == 'afternoon', na.rm = TRUE),
-    night_games = sum(start_time_clean == 'night', na.rm = TRUE),
+    morning_gms = sum(start_time_clean == 'morning', na.rm = TRUE),
+    afternoon_gms = sum(start_time_clean == 'afternoon', na.rm = TRUE),
+    night_gms = sum(start_time_clean == 'night', na.rm = TRUE),
+    prop_prime_time = night_gms / (morning_gms + afternoon_gms + night_gms),
     
     .groups = 'drop'
+  ) %>%
+  dplyr::select(
+    season,
+    team,
+    med_wind, 
+    med_temp,
+    prop_bad_wthr_gms, 
+    prop_grass_flds,
+    prop_outdoor_gms,
+    prop_prime_time
   )
 
 team_trends = team_stats %>%
