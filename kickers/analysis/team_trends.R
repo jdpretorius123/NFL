@@ -3,9 +3,11 @@
 rm(list = ls())
 
 packages = c(
-  'car',
+  'lme4',
   'tidyverse',
   'broom',
+  'broom.mixed',
+  'sjPlot',
   'here',
   'nflreadr',
   'plotly',
@@ -200,34 +202,96 @@ names(nfl_colors) = team_info$team_abbr
 
 nfl_teams_line_plot(team_trends, y_cols)
 nfl_teams_heatmap(team_trends, y_cols)
+
 # -------------------------------------------------------------------------
-# ANOVA Testing -----------------------------------------------------------
+# Mixed Modeling ----------------------------------------------------------
 
-test_vars = y_cols
-anova_results = test_vars %>%
-  map_df(function(var) {
-    formula = as.formula(paste(var, '~ season*team'))
-    model = lm(
-      formula, 
-      data = team_trends, 
-      contrasts = list(team = contr.sum)
-    )
-    
-    car::Anova(model, type = 'III') %>%
-      tidy() %>%
-      mutate(variable = var)
-  })
-
-n = length(test_vars)
-anova_results = anova_results %>%
-  filter(term %in% c('team', 'team:season')) %>%
-  group_by(term) %>%
-  mutate(
-    p_bnfrrni = p.adjust(p.value, method = 'bonferroni', n = n),
-    sig = p_bnfrrni < 0.05
+perf_data = pbp_pp %>%
+  dplyr::select(
+    fg_result_clean,
+    kick_distance,
+    season,
+    surface_clean,
+    start_time_clean,
+    roof_clean,
+    kicker_player_id,
+    posteam
   ) %>%
-  arrange(term, p_bnfrrni)
+  mutate(
+    fg_result = as.factor(if_else(fg_result_clean == 'made', 1, 0)),
+    surface = as.factor(if_else(surface_clean == 'grass', 1, 0)),
+    prime_time = as.factor(if_else(start_time_clean == 'night', 1, 0)),
+    roof = as.factor(if_else(roof_clean == 'indoors', 1, 0)),
+    team = as.factor(posteam),
+    kicker_id = as.factor(kicker_player_id)
+  ) %>%
+  dplyr::select(
+    fg_result,
+    kick_distance,
+    season,
+    surface,
+    prime_time,
+    roof,
+    team,
+    kicker_id
+  )
 
+performance = glmer(
+  fg_result ~ kick_distance + season +
+    surface + prime_time + roof +
+    (1 | kicker_id) +
+    (1 | team),
+  data = perf_data,
+  family = binomial,
+  glmerControl(autoscale = TRUE)
+)
+
+perf_fixed_eff = tidy(
+  performance,
+  effects = 'fixed',
+  exponentiate = TRUE, 
+  conf.int = TRUE
+)
+perf_team_ldrbrd = tidy(performance, effects = 'ran_vals') %>%
+  filter(group == 'team') %>%
+  arrange(desc(estimate))
+tab_model(
+  performance,
+  show.re.var = TRUE,
+  dv.labels = 'Field Goal Success',
+  string.est = 'Odds Ratio'
+)
+
+strat_data = team_trends %>%
+  dplyr::select(
+    team,
+    fga_0_29,
+    season,
+    goal_to_go,
+    med_score_diff,
+    n_kickers
+  ) %>%
+  mutate(team = as.factor(team))
+
+strategy = lmer(
+  fga_0_29 ~ season + goal_to_go + med_score_diff + n_kickers +
+    (1 | team),
+  data = strat_data
+)
+
+strat_fixed_eff = tidy(
+  strategy,
+  effects = 'fixed',
+  exponentiate = TRUE, 
+  conf.int = TRUE
+)
+strat_team_ldrbrd = tidy(strategy, effects = 'ran_vals') %>%
+  filter(group == 'team') %>%
+  arrange(desc(estimate))
+tab_model(
+  strategy,
+  show.re.var = TRUE,
+  dv.labels = 'FGA < 30 yds',
+  string.est = 'Odds Ratio'
+)
 # -------------------------------------------------------------------------
-
-
