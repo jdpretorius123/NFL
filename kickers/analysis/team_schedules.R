@@ -3,6 +3,7 @@
 rm(list = ls())
 
 packages = c(
+  'corrplot',
   'lme4',
   'tidyverse',
   'broom',
@@ -43,6 +44,26 @@ source(helpers_file)
 # -------------------------------------------------------------------------
 # Loading Data ------------------------------------------------------------
 
+stadiums_url = paste0(
+  'https://raw.githubusercontent.com', 
+  '/greerreNFL',
+  '/Stadiums',
+  '/main',  
+  '/data',
+  '/stadiums.csv'
+)
+stadiums = read_csv(file = stadiums_url, show_col_types = FALSE)
+
+team_stadiums_url = paste0(
+  'https://raw.githubusercontent.com', 
+  '/greerreNFL',
+  '/Stadiums',
+  '/main',  
+  '/data',
+  '/team_stadiums.csv'
+)
+team_stadiums = read_csv(file = team_stadiums_url, show_col_types = FALSE)
+
 pbp_file = here('kickers', 'data', 'pp', 'pbp', 'pbp_pp.rdata')
 load(pbp_file)
 
@@ -79,7 +100,7 @@ starter_coverage = league_trends %>%
   )
 
 # -------------------------------------------------------------------------
-# Creating the Team Trends Dataset ----------------------------------------
+# Team Demos Dataset ------------------------------------------------------
 
 team_demos = pbp_pp %>%
   arrange(season, posteam, week, game_id, play_id) %>%
@@ -93,6 +114,9 @@ team_demos = pbp_pp %>%
     mean_height = mean(height, na.rm = TRUE),
     .groups = 'drop'
   )
+
+# -------------------------------------------------------------------------
+# Team Stats Dataset ------------------------------------------------------
 
 team_stats = pbp_pp %>%
   arrange(season, posteam, week, game_id, play_id) %>%
@@ -132,7 +156,10 @@ team_stats = pbp_pp %>%
     .groups = 'drop'
   )
 
-conditions_vars = c(
+# -------------------------------------------------------------------------
+# Team Stadium Conditions -------------------------------------------------
+
+stdm_cndtns_vars = c(
   'season',
   'posteam',
   'week',
@@ -143,7 +170,7 @@ conditions_vars = c(
   'roof_clean',
   'start_time_clean'
 )
-team_conditions = pbp_pp %>%
+team_stdm_cndtns = pbp_pp %>%
   arrange(season, posteam, week, game_id, play_id) %>%
   dplyr::select(all_of(conditions_vars)) %>%
   distinct() %>%
@@ -183,9 +210,63 @@ team_conditions = pbp_pp %>%
     prop_prime_time
   )
 
-team_trends = team_stats %>%
-  inner_join(y = team_demos, by = join_by(season, team)) %>%
-  inner_join(y = team_conditions, by = join_by(season, team))
+# -------------------------------------------------------------------------
+# Team Schedule Dataset ---------------------------------------------------
+
+#' Filter PBP_PP for Game ID, Home Team, Away Team, Week, Season, 
+#' Divisional Game, Stadium ID 
+
+# -------------------------------------------------------------------------
+# Team Dataset ------------------------------------------------------------
+
+# team_data = team_stats %>%
+#   inner_join(y = team_demos, by = join_by(season, team)) %>%
+#   inner_join(y = team_conditions, by = join_by(season, team))
+
+# -------------------------------------------------------------------------
+# Stadiums PP -------------------------------------------------------------
+
+stadiums_cols = c(
+  'stadium_id',
+  'stadium_name',
+  'lat',
+  'lon',
+  'altitude',
+  'surface_type',
+  'roof_type',
+  'city',
+  'state',
+  'zipcode',
+  'country',
+  'tz',
+  'tz_offset'
+)
+stadiums_edit = stadiums %>%
+  dplyr::select(all_of(stadiums_cols))
+
+# -------------------------------------------------------------------------
+# Team Stadiums PP --------------------------------------------------------
+
+team_stadiums_cols = c(
+  'team',
+  'team_fastr',
+  'stadium',
+  'is_current',
+  'stadium_name',
+  'lat',
+  'lon',
+  'altitude',
+  'surface_type',
+  'roof_type',
+  'city',
+  'state',
+  'zipcode',
+  'country',
+  'tz',
+  'tz_offset'
+)
+team_stadiums_edit = team_stadiums %>%
+  dplyr::select(all_of(team_stadium_cols))
 
 # -------------------------------------------------------------------------
 # Visualizations ----------------------------------------------------------
@@ -203,95 +284,4 @@ names(nfl_colors) = team_info$team_abbr
 nfl_teams_line_plot(team_trends, y_cols)
 nfl_teams_heatmap(team_trends, y_cols)
 
-# -------------------------------------------------------------------------
-# Mixed Modeling ----------------------------------------------------------
-
-perf_data = pbp_pp %>%
-  dplyr::select(
-    fg_result_clean,
-    kick_distance,
-    season,
-    surface_clean,
-    start_time_clean,
-    roof_clean,
-    kicker_player_id,
-    posteam
-  ) %>%
-  mutate(
-    fg_result = as.factor(if_else(fg_result_clean == 'made', 1, 0)),
-    surface = as.factor(if_else(surface_clean == 'grass', 1, 0)),
-    prime_time = as.factor(if_else(start_time_clean == 'night', 1, 0)),
-    roof = as.factor(if_else(roof_clean == 'indoors', 1, 0)),
-    team = as.factor(posteam),
-    kicker_id = as.factor(kicker_player_id)
-  ) %>%
-  dplyr::select(
-    fg_result,
-    kick_distance,
-    season,
-    surface,
-    prime_time,
-    roof,
-    team,
-    kicker_id
-  )
-
-performance = glmer(
-  fg_result ~ kick_distance + season +
-    surface + prime_time + roof +
-    (1 | kicker_id) +
-    (1 | team),
-  data = perf_data,
-  family = binomial,
-  glmerControl(autoscale = TRUE)
-)
-
-perf_fixed_eff = tidy(
-  performance,
-  effects = 'fixed',
-  exponentiate = TRUE, 
-  conf.int = TRUE
-)
-perf_team_ldrbrd = tidy(performance, effects = 'ran_vals') %>%
-  filter(group == 'team') %>%
-  arrange(desc(estimate))
-tab_model(
-  performance,
-  show.re.var = TRUE,
-  dv.labels = 'Field Goal Success',
-  string.est = 'Odds Ratio'
-)
-
-strat_data = team_trends %>%
-  dplyr::select(
-    team,
-    fga_0_29,
-    season,
-    goal_to_go,
-    med_score_diff,
-    n_kickers
-  ) %>%
-  mutate(team = as.factor(team))
-
-strategy = lmer(
-  fga_0_29 ~ season + goal_to_go + med_score_diff + n_kickers +
-    (1 | team),
-  data = strat_data
-)
-
-strat_fixed_eff = tidy(
-  strategy,
-  effects = 'fixed',
-  exponentiate = TRUE, 
-  conf.int = TRUE
-)
-strat_team_ldrbrd = tidy(strategy, effects = 'ran_vals') %>%
-  filter(group == 'team') %>%
-  arrange(desc(estimate))
-tab_model(
-  strategy,
-  show.re.var = TRUE,
-  dv.labels = 'FGA < 30 yds',
-  string.est = 'Odds Ratio'
-)
 # -------------------------------------------------------------------------
