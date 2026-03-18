@@ -153,54 +153,45 @@ histograms = function(df, nbins, x_cols) {
     )
 }
 # -------------------------------------------------------------------------
-# Dynamic Violin ----------------------------------------------------------
-dynamic_violin = function(df, x_cols, y_cols) {
-  #' Create grouped violin charts using a dataset (df), its numeric columns, and
-  #' a grouping variable (x)
+# Dynamic Strip Chart ----------------------------------------------------------
+dynamic_strip_chart = function(df, y_cols) {
+  #' Create grouped strip charts using a dataset (df) and its numeric columns
   #'
   #' @param df Dataset
-  #' @param x_cols (character): Vector naming grouping variables of interest
   #' @param y_cols (character): Vector naming numeric variables of interest
-  #' @return p Interactive plotly violin chart with a dropdown menu for variable
+  #' @return p Interactive plotly strip chart with a dropdown menu for variable
   #'  selection
-  init_x = x_cols[1] 
+  temp = df
+  
+  init_x = 'season'
   init_y = y_cols[1]
   
   init_x_label = create_label(init_x)
   init_y_label = create_label(init_y)
   
-  p = plot_ly(data = df) %>%
-    add_trace(
-      x = df[[init_x]],
-      y = df[[init_y]],
-      text = df[['team']],
-      type = 'violin',
-      points = FALSE,
-      hoverinfo = 'skip',
-      meanline = list(visible = TRUE),
-      marker = list(opacity = 0),
-      line = list(color = 'black', width = 1),
-      fillcolor = 'rgba(100, 150, 250, 0.4)'
-    ) %>%
-    add_trace(
-      x = df[[init_x]],
-      y = df[[init_y]],
-      type = 'scatter',
-      mode = 'markers',
-      marker = list(
-        color = 'black',
-        size = 5,
-        opacity = 0.5,
-        jitter = 0.3,
-        pointpos = 0
-      ),
-      customdata = df[['team']],
-      hovertemplate = paste0(
-        init_x_label, ': %{x}<br>',
-        init_y_label, ': %{y}<br>',
-        'Team: %{customdata}<extra></extra>'
-      )
-    )
+  temp$jit_season = temp[[init_x]] + runif(nrow(df), -0.3, 0.3)
+  
+  p = plot_ly(
+    data = temp,
+    x = ~jit_season,
+    y = ~get(init_y),
+    type = 'scattergl',
+    mode = 'markers',
+    
+    marker = list(
+      color = 'black',
+      size = 5,
+      opacity = 0.5
+    ),
+    
+    customdata = ~team,
+    hovertemplate = paste0(
+      '<br>%{customdata}</b><br>',
+      init_x_label, ': %{text}<br>',
+      init_y_label, ': %{y:.2f}<extra></extra>'
+    ),
+    text = ~season
+  )
   
   y_buttons = lapply(y_cols, function(col) {
     y_label = create_label(col)
@@ -208,14 +199,11 @@ dynamic_violin = function(df, x_cols, y_cols) {
       method = 'update',
       args = list(
         list(
-          y = list(df[[col]], df[[col]]),
-          hovertemplate = list(
-            NULL,
-            paste0(
-              init_x_label, ': %{x}<br>',
-              y_label, ': %{y}<br>',
-              'Team: %{customdata}<extra></extra>'
-            )
+          y = list(df[[col]]),
+          hovertemplate = paste0(
+            '<br>%{customdata}</b><br>',
+            init_x_label, ': %{text}<br>',
+            y_label, ': %{y:.2f}<extra></extra>'
           )
         ),
         list(yaxis = list(title = y_label))
@@ -224,59 +212,30 @@ dynamic_violin = function(df, x_cols, y_cols) {
     )
   })
   
-  x_buttons = lapply(x_cols, function(col) {
-    x_label = create_label(col)
-    list(
-      method = 'update',
-      args = list(
-        list(
-          x = list(df[[col]], df[[col]]),
-          text = list(df[['team']]),
-          hovertemplate = list(
-            NULL,
-            paste0(
-              x_label, ': %{x}<br>',
-              init_y_label, ': %{y}<br>',
-              'Team: %{customdata}<extra></extra>'
-            )
-          )
-        ),
-        list(xaxis = list(title = x_label))
-      ),
-      label = x_label
-    )
-  })
-  
   p %>% layout(
-    xaxis = list(title = init_x_label),
+    hovermode = 'closest',
+    xaxis = list(
+      title = init_x_label,
+      tickmode = 'linear',
+      dtick = 1,
+      range = c(min(temp$season) - 1, max(temp$season) + 1)
+    ),
     yaxis = list(title = init_y_label),
     showlegend = FALSE,
     margin = list(r = 150),
     updatemenus = list(
       list(
-        buttons = y_buttons, 
-        x = 1.05, y = 0.8, 
-        xanchor = 'left', yanchor = 'top'
-      ),
-      list(
-        buttons = x_buttons,
-        x = 1.05, y = 0.5,
+        buttons = y_buttons,
+        x = 1.05, y = 0.6,
         xanchor = 'left', yanchor = 'top'
       )
     )
   ) %>%
     add_annotations(
-      text = '<b>Select Y:</b>', 
-      x = 1.05, y = 0.85, 
+      text = '<b>Select Y:</b>',
+      x = 1.05, y = 0.65,
       xref = 'paper', yref = 'paper',
-      xanchor = 'left', yanchor = 'bottom', 
-      showarrow = FALSE
-    ) %>%
-    add_annotations(
-      text = '<b>Select X:</b>', 
-      x = 1.05, y = 0.55, 
-      xref = 'paper', yref = 'paper',
-      xanchor = 'left', yanchor = 'bottom', 
+      xanchor = 'left', yanchor = 'bottom',
       showarrow = FALSE
     )
 }
@@ -714,7 +673,7 @@ nfl_teams_heatmap = function(df, metric_list) {
   
   init_metric = metric_list[1]
   init_z = get_z_matrix(init_metric)
-
+  
   p = plot_ly(
     x = seasons,
     y = teams,
@@ -740,7 +699,7 @@ nfl_teams_heatmap = function(df, metric_list) {
           hovertemplate = paste0(
             'Team: %{y}<br>',
             'Season: %{x}<br>',
-            met_label, ': %{z}<extra></extra>'
+            met_label, ': %{z:.2f}<extra></extra>'
           )
         )
       ),
@@ -770,3 +729,294 @@ nfl_teams_heatmap = function(df, metric_list) {
     )
 }
 # -------------------------------------------------------------------------
+# NFL Teams Scatter Plot --------------------------------------------------
+nfl_teams_scatter_plot = function(df, x_cols, y_cols) {
+  #' Create scatter plots using a dataset (df) and any numeric cols (x_cols and
+  #' y_cols) that you fancy.
+  #'
+  #' @param df Dataset
+  #' @param x_cols (character): Vector naming x-axis variables of interest
+  #' @param y_cols (character): Vector naming y-axis variables of interest
+  #' @return p Interactive plotly scatter plot with a dropdown menu for variable
+  #'  selection
+  init_x = 'total_fgm'
+  init_y = 'mean_trvl_dst_mtrs'
+  init_x_label = create_label(init_x)
+  init_y_label = create_label(init_y)
+  
+  team_info = nflreadr::load_teams() %>%
+    dplyr::select(team_abbr, team_color)
+  nfl_colors = team_info$team_color
+  names(nfl_colors) = team_info$team_abbr
+  
+  p = plot_ly(
+    data = df,
+    x = ~get(init_x),
+    y = ~get(init_y),
+    color = ~team,      
+    colors = nfl_colors, 
+    type = 'scattergl', 
+    mode = 'markers',
+    marker = list(
+      size = 10, 
+      opacity = 0.8, 
+      line = list(color = '#FFFFFF', width = 1) 
+    ),
+    text = ~team,
+    hovertemplate = paste0(
+      '%{text}<br>',
+      init_x_label, ': %{x}<br>',
+      init_y_label, ': %{y}<extra></extra>'
+    )
+  )
+  
+  y_buttons = lapply(y_cols, function(col) {
+    y_label = create_label(col)
+    list(
+      method = 'update',
+      args = list(
+        list(
+          y = list(df[[col]]),
+          hovertemplate = paste0(
+            '%{text}<br>',
+            init_x_label, ': %{x}<br>',
+            y_label, ': %{y}<extra></extra>'
+          )
+        ),
+        list(yaxis = list(title = y_label))
+      ),
+      label = y_label
+    )
+  })
+  
+  x_buttons = lapply(x_cols, function(col) {
+    x_label = create_label(col)
+    list(
+      method = 'update',
+      args = list(
+        list(
+          x = list(df[[col]]),
+          hovertemplate = paste0(
+            '%{text}<br>',
+            x_label, ': %{x}<br>',
+            init_y_label, ': %{y}<extra></extra>'
+          )
+        ),
+        list(xaxis = list(title = x_label))
+      ),
+      label = x_label
+    )
+  })
+  
+  p %>%
+    layout(
+      xaxis = list(title = init_x_label),
+      yaxis = list(title = init_y_label),
+      showlegend = FALSE, 
+      hovermode = 'closest',
+      margin = list(r = 150),
+      updatemenus = list(
+        list(
+          buttons = y_buttons,
+          x = 1.05, y = 0.8,
+          xanchor = 'left', yanchor = 'top'
+        ),
+        list(
+          buttons = x_buttons,
+          x = 1.05, y = 0.5,
+          xanchor = 'left', yanchor = 'top'
+        )
+      )
+    ) %>%
+    add_annotations(
+      text = c('<b>Select Y:</b>', '<b>Select X:</b>'),
+      x = 1.05, y = c(0.85, 0.55),
+      xref = 'paper', yref = 'paper',
+      xanchor = 'left', yanchor = 'bottom',
+      showarrow = FALSE
+    )
+}
+# -------------------------------------------------------------------------
+# Grouped Line Plot -------------------------------------------------------
+grouped_line_plot = function(df, x_col, y_cols, group_col) {
+  #' Create a grouped line plot
+  #'
+  #' @param df Dataset
+  #' @param x_col (character): The time variable
+  #' @param y_cols (character): Numeric metrics
+  #' @param group_col (character): The category variable
+  
+  df = df %>% 
+    dplyr::arrange(!!rlang::sym(group_col), !!rlang::sym(x_col))
+  df[[group_col]] = as.factor(df[[group_col]])
+  
+  groups = levels(df[[group_col]])
+  n_groups = length(groups)
+  
+  init_y = y_cols[1]
+  init_y_label = create_label(init_y)
+  
+  p = plot_ly()
+  
+  for (g in groups) {
+    group_data = df[df[[group_col]] == g, ]
+    p = p %>% add_trace(
+      data = group_data,
+      x = ~get(x_col),
+      y = ~get(init_y),
+      name = g,
+      type = 'scatter',
+      mode = 'lines+markers',
+      marker = list(size = 8),
+      hovertemplate = paste0(
+        '<b>', g, '</b><br>',
+        'Season: %{x}<br>',
+        init_y_label, ': %{y:.1f}<extra></extra>'
+      )
+    )
+  }
+  
+  y_buttons = lapply(y_cols, function(col) {
+    y_label = create_label(col)
+    new_y_data = unname(split(df[[col]], df[[group_col]]))
+    new_hovers = lapply(groups, function(g) {
+      paste0(
+        '<b>', g, '</b><br>', 
+        'Season: %{x}<br>', 
+        y_label, ': %{y:.1f}<extra></extra>'
+      )
+    })
+    
+    list(
+      method = 'update',
+      args = list(
+        list(
+          y = new_y_data,
+          hovertemplate = new_hovers
+        ),
+        list(yaxis = list(title = y_label))
+      ),
+      label = y_label
+    )
+  })
+  
+  p %>% layout(
+    xaxis = list(title = 'Season', dtick = 1),
+    yaxis = list(title = init_y_label),
+    hovermode = 'closest',
+    showlegend = TRUE,
+    legend = list(orientation = 'h', x = 0.5, xanchor = 'center', y = -0.2),
+    margin = list(r = 160, t = 50),
+    updatemenus = list(
+      list(
+        buttons = y_buttons,
+        x = 1.05, y = 0.8,
+        xanchor = 'left', yanchor = 'top'
+      )
+    )
+  ) %>%
+    add_annotations(
+      text = '<b>Select Metric:</b>',
+      x = 1.05, y = 0.85,
+      xref = 'paper', yref = 'paper',
+      xanchor = 'left', yanchor = 'bottom',
+      showarrow = FALSE
+    )
+}
+# -------------------------------------------------------------------------
+
+# Get Colors --------------------------------------------------------------
+get_colors = function(chg_vec) {
+  #' Associate colors with a vector of values indicating change 
+  #'
+  #' @param chg_vec (number): Numeric vector of values indicating change
+  ifelse(chg_vec >= 0, "#28a745", "#dc3545")
+}
+# -------------------------------------------------------------------------
+# Stadium Impact Plot -----------------------------------------------------
+stadium_impact_plot = function(df, chg_cols, group_col) {
+  #' Create a bar plot to visualize the impact of change
+  #'
+  #' @param df Dataset
+  #' @param chg_cols (character): Character vector of columns indicating change
+  #' @param group_col (character): String indicating variable to group by
+  plot_df = df %>% 
+    filter(is_current == TRUE) %>%
+    arrange(home_team)
+  
+  init_met = chg_cols[1]
+  init_met_label = create_label(init_met)
+  
+  p = plot_ly(data = plot_df) %>%
+    add_trace(
+      x = ~get(init_met),
+      y = ~get(group_col),
+      type = 'bar',
+      orientation = 'h',
+      marker = list(
+        color = get_colors(plot_df[[init_met]]),
+        line = list(color = 'white', width = 1)
+      ),
+      customdata = ~roof_chg, 
+      hovertemplate = paste0(
+        '%{y}<br>',
+        'Transition: %{customdata}<br>',
+        'Impact: %{x:.2f}<extra></extra>'
+      )
+    )
+  
+  buttons = lapply(chg_cols, function(met) {
+    met_label = create_label(met)
+    current_vec = plot_df[[met]]
+    
+    list(
+      method = 'update',
+      args = list(
+        list(
+          x = list(current_vec),
+          marker = list(
+            color = get_colors(current_vec),
+            line = list(color = 'white', width = 1)
+          ),
+          hovertemplate = paste0(
+            '%{y}<br>Transition: %{customdata}<br>',
+            met_label, ': %{x:.2f}<extra></extra>'
+          )
+        ),
+        list(xaxis = list(title = paste('Change in', met_label)))
+      ),
+      label = met_label
+    )
+  })
+  
+  p %>% layout(
+    xaxis = list(
+      title = paste('Change in', init_met_label),
+      zeroline = TRUE, 
+      zerolinewidth = 2, 
+      zerolinecolor = '#333'
+    ),
+    yaxis = list(
+      title = '', 
+      autorange = 'reversed'
+    ),
+    margin = list(l = 100, r = 150, t = 80),
+    updatemenus = list(
+      list(
+        buttons = buttons,
+        x = 1.05, y = 0.8,
+        xanchor = 'left', yanchor = 'top'
+      )
+    )
+  ) %>%
+    add_annotations(
+      text = '<b>Select Metric:</b>',
+      x = 1.05, y = 0.85,
+      xref = 'paper', yref = 'paper',
+      xanchor = 'left', yanchor = 'bottom',
+      showarrow = FALSE
+    )
+}
+# -------------------------------------------------------------------------
+
+

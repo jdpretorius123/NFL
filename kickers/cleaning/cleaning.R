@@ -94,9 +94,9 @@ temp_pbp = pbp %>%
     
     start_time_clean = hms::as_hms(start_time_clean),
     start_time_clean = case_when(
-      hour(start_time_clean) <= 13 ~ 'morning',
-      hour(start_time_clean) > 13 & hour(start_time_clean) <= 17 ~ 'afternoon',
-      hour(start_time_clean) > 17 ~ 'night',
+      hour(start_time_clean) < 13 ~ 'morning',
+      hour(start_time_clean) >= 13 & hour(start_time_clean) < 18 ~ 'afternoon',
+      hour(start_time_clean) > 18 ~ 'night',
       .default = NA
     ),
     
