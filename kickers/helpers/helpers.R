@@ -871,7 +871,7 @@ grouped_line_plot = function(df, x_col, y_cols, group_col) {
       hovertemplate = paste0(
         '<b>', g, '</b><br>',
         'Season: %{x}<br>',
-        init_y_label, ': %{y:.1f}<extra></extra>'
+        init_y_label, ': %{y:.2f}<extra></extra>'
       )
     )
   }
@@ -883,7 +883,7 @@ grouped_line_plot = function(df, x_col, y_cols, group_col) {
       paste0(
         '<b>', g, '</b><br>', 
         'Season: %{x}<br>', 
-        y_label, ': %{y:.1f}<extra></extra>'
+        y_label, ': %{y:.2f}<extra></extra>'
       )
     })
     

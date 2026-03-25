@@ -1,5 +1,82 @@
 [
   {
+    "objectID": "kickers/blogs/league_trends_revisited.html",
+    "href": "kickers/blogs/league_trends_revisited.html",
+    "title": "Were those League Trends a Fluke?",
+    "section": "",
+    "text": "In my first blog (published centuries ago…), I shared some league-wide trends that I found interesting. These trends covered the increased athleticism and kicking performance of starting NFL kickers.\nIn short…\n\n\nThey are now taller and weigh less\n\n\n\nDon’t make them like they used to\n\n\nTake a moment to appreciate the greatness that was Janikowski\n\n\n\nLess field goals (FGs) are being attempted at distances less than 30 yards out\n\n\nMore FGs are being attempted at distances greater than or equal to 50 yards out\n\n\nAccuracy has increased across the board, regardless the distance\n\n\nWhat I didn’t do when exploring these trends is control for a bunch of obvious stuff, like stadium roof type, weather, etc. Why? I wanted to leave you all wanting more.\nWith all that said, are you ready for this???\nLET’S GET TO IT!!!\nQuick Note All charts are interactive. Don’t be afraid to play around with them."
+  },
+  {
+    "objectID": "kickers/blogs/league_trends_revisited.html#review-refresh",
+    "href": "kickers/blogs/league_trends_revisited.html#review-refresh",
+    "title": "Were those League Trends a Fluke?",
+    "section": "",
+    "text": "In my first blog (published centuries ago…), I shared some league-wide trends that I found interesting. These trends covered the increased athleticism and kicking performance of starting NFL kickers.\nIn short…\n\n\nThey are now taller and weigh less\n\n\n\nDon’t make them like they used to\n\n\nTake a moment to appreciate the greatness that was Janikowski\n\n\n\nLess field goals (FGs) are being attempted at distances less than 30 yards out\n\n\nMore FGs are being attempted at distances greater than or equal to 50 yards out\n\n\nAccuracy has increased across the board, regardless the distance\n\n\nWhat I didn’t do when exploring these trends is control for a bunch of obvious stuff, like stadium roof type, weather, etc. Why? I wanted to leave you all wanting more.\nWith all that said, are you ready for this???\nLET’S GET TO IT!!!\nQuick Note All charts are interactive. Don’t be afraid to play around with them."
+  },
+  {
+    "objectID": "kickers/blogs/league_trends_revisited.html#nfl-starter-coverage",
+    "href": "kickers/blogs/league_trends_revisited.html#nfl-starter-coverage",
+    "title": "Were those League Trends a Fluke?",
+    "section": "NFL Starter Coverage",
+    "text": "NFL Starter Coverage\nSo my first blog focused solely on starting kickers. What this means is I carefully determined the starting kickers for each season from 2001 to 2025. How did I do this? If you want to know, I will happily share. To put it simply, I used some machine learning.\nMore importantly, how well did my approach work?\nLooking at the table below, it should apparent that my data accounts for most of the field goals attempted per season. There are some years that are slightly concerning, like 2017 and 2018, but I’m not losing any sleep over it, and neither should you. These years are largely the result of high inconsistency at the starting kicker position. Like, what is going on with 2017? I am so tempted to launch an investigation into that year alone. For starters to account for only 46% of the kickers that year is crazy.\nWhat you need to take away from this is here on out I will make it clear if I am referring all kickers or only starters. This distinction is important. Keep an eye out for it.\n\n\nDownload CSV\n\n\n* FGA stands for Field Goals Attempted."
+  },
+  {
+    "objectID": "kickers/blogs/league_trends_revisited.html#the-obvious",
+    "href": "kickers/blogs/league_trends_revisited.html#the-obvious",
+    "title": "Were those League Trends a Fluke?",
+    "section": "The Obvious",
+    "text": "The Obvious\nDid you watch SpongeBob as a kid? Do you kids watch SpongeBob? That freakin’ sponge will never go away. He’s like the damn gum on the bottom of your shoe (haha). There was an episode where he became a hermit and feared going outside. Sandy eventually convinced him to come outdoors, but shortly after, he was mangled by a gorilla.\nThe point is, chilling out inside is undeniably nice sometimes, especially when winter is here. It’s not far fetched to think that kickers feel the same way. Let’s take a look at the trends in FG attempts, FG%, and the league median FG distance over the years when kicking inside compared to outside. These trends were calculated using all NFL kickers.\nThe charts tell us three key points.\n\n\nThere have been more FG attempts outside than inside, but the number of FG attempts inside is slowly catching up (more on this later)\n\n\nFor most years, FG% tends to be better inside than outside\n\n\nThe league median kick distance inside is usually greater than that outside - makes sense\n\n\n\n\n\n\n\n\nLet’s focus on FG attempts. Do our eyes deceive us? Are they really catching up to the number of FGs attempted outside? Yeah, they are - the stats clearly support this narrative.\n\n\n\n\n\n\n\n\nIndoor vs. Outdoor FG Attempts (2001–2025)\n\n\nChi-squared Test for Trend in Proportions\n\n\nChi-squared\np-value\ndf\n\n\n\n\n267.12\n4.82 × 10−60\n1\n\n\n\n\n\n\n\nThis result raises another important question. Is the league transitioning toward more stadiums that are, or can potentially be, indoors?\nOddly enough, the number of domes has shockingly decreased. BUT… there are now more stadiums with retractable roofs. Even though the total number of stadiums that are, or can potentially be, indoors has NOT increased, the number of stadiums with retractable roofs has. Again, the stats support this narrative, and it could be one reason why the number of FGs attempted inside has also increased.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIndoor Stadium Growth (2001–2025)\n\n\nChi-squared Test for Trend in Proportions\n\n\nChi-squared\np-value\ndf\n\n\n\n\n2.16\n0.14132\n1\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRetractable Roof Stadium Growth (2001–2025)\n\n\nChi-squared Test for Trend in Proportions\n\n\nChi-squared\np-value\ndf\n\n\n\n\n16.54\n4.75 × 10−5\n1\n\n\n\n\n\n\n\nWhat does this trend mean for kicking performance? Does the stadium roof type really matter? Are the distance and success of any given kick actually impacted by whether it’s attempted inside or outside?\nAccording to the stats, FG kicks attempted inside have a higher conversion rate and are roughly 1 yard longer than those outside. Cool, so they both are. I guess being an indoor hermit ain’t that bad.\n\n\n\n\n\n\n\n\nFG Result by Roof Type (2001–2025)\n\n\nChi-squared Test of Independence\n\n\nChi-squared\np-value\ndf\n\n\n\n\n17.63\n2.69 × 10−5\n1\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nKick Distance by Roof Type (2001–2025)\n\n\nMann-Whitney U Test of Distributional Shift\n\n\nLocational Difference\nW\np-value\nCI Lower\nCI Higher\n\n\n\n\n1.0000\n62237579\n1.22 × 10−13\n0.9999\n1.0001\n\n\n\n\n\n\n\nDid I mislead everyone by reporting a bunch of things in the first blog without controlling for the obvious? Long story short, nah, but it’s more nuanced than I suggested.\nThe FG% outside is increasing by 0.29% per season, whereas the FG% inside is increasing by 0.13% per season. Overall, there is an undoubted steady increase in FG% per season since 2001, but this rate of increase depends heavily on whether the kick is inside or outside. The faster rate of increase per season for outside kicks is actually remarkable when you think about it.\nIs it because of improved coaching, training, or athleticism? You can really go down some serious rabbit holes with that one. Getting back on track, let’s look at the league median kick distance.\n\n\n\n\n\n\n\n\nImpact of Being Inside on FG%\n\n\nOutdoor Accuracy is Getting Scary Good!\n\n\nPredictor\nEstimate\nStd. Error\np-value\n95% CI Lower\n95% CI Upper\n\n\n\n\nBaseline (Outside)\n0.790\n0.007\n1.08 × 10−56\n7.75 × 10−1\n8.05 × 10−1\n\n\nInside Effect\n0.040\n0.011\n4.42 × 10−4\n1.86 × 10−2\n6.09 × 10−2\n\n\nYearly Trend (Yds/Year)\n0.003\n0.001\n1.49 × 10−6\n1.86 × 10−3\n4.00 × 10−3\n\n\nInteraction\n−0.002\n0.001\n3.51 × 10−2\n−3.14 × 10−3\n−1.19 × 10−4\n\n\n\nModel Fit: R² = 0.523 | Adj. R² = 0.492 | F-statistic = 16.83 (df = 46) | p = &lt;0.001\n\n\nCI stands for Confidence Interval\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDespite no interaction between the stadium roof type and the season, the results clearly indicate that the league median kick distance is increasing at a rate of 0.153 yards per season, regardless of whether a game is played indoors or outdoors. Moreover, indoor games have a consistent 0.86-yard advantage in median kick distance over outdoor games, but both settings are experiencing the same annual increase in median kick distance.\nAs of right now, this model is a sham. It couldn’t predict the outcome of a coin flip, so let’s take a look at the weather. Is Mother Nature really that scary?\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nModel Comparison: League Median Kick Distance\n\n\nEvaluating the necessity of Roof Type and Interaction effects\n\n\nPredictor\nNull (Season Effect)\nPartial (No Interaction)\nFull (Interaction)\n\n\n\n\nBaseline (Outside)\n36.191 (p=&lt;0.01)\n35.761 (p=&lt;0.01)\n35.855 (p=&lt;0.01)\n\n\nYearly Trend (Yds/Year)\n0.153 (p=&lt;0.01)\n0.153 (p=&lt;0.01)\n0.145 (p=&lt;0.01)\n\n\nInside Effect\n-\n0.86 (p=&lt;0.01)\n0.671 (p=0.232)\n\n\nInteraction\n-\n-\n0.016 (p=0.692)\n\n\n\nNote:Estimates shown with p-values in parentheses. The high p-value for the ’Interaction’suggests it does not significantly improve the model.\n\n\nF-Tests:Partial vs Null (Roof Effect): p = 0.0038125Full vs Partial (Interaction): p = 0.69179\n\n\n\n\n\n\n\n\nBefore I get into anything, here’s how I broke down the weather for each outdoor game. If a game had any of the following, it was deemed as having bad weather or not ideal kicking conditions.\n\n\nPrecipitation (rain and snow)\n\n\nExtreme cold (temperatures colder than 96% of all games)\n\n\nExtreme heat (temperatures hotter than 96% of all games)\n\n\nEvery other outdoor game should have at least decent weather. Since we’re talking about NFL kickers, decent weather should be good enough. Right?\nLooking at the chart below, it’s clear my approach is conservative, as most games seem to have decent or good weather. After all, we are talking about humans, too. Safety comes first, folks.\nIt is interesting to see the decrease in bad weather games. Again, this could be due to the league trending toward more retractable stadiums.\n\n\n\n\n\n\nHow do FG% and the league median kick distance stack up?\nIt turns out Mother Nature is unbiased. All her wrath was directed toward FG%. Good weather games, unsurprisingly, tend to have a higher seasonal FG% compared to bad weather games. Moreover, there is seemingly zero effect of weather on the league’s median kick distance - more on this later.\nBut before we jump to any conclusions, let’s see what the stats have to say.\n\n\n\n\n\n\nIt turns out the seasonal increase in FG% is really robust! Let’s go!\nIf I am going to be technically correct…\nEven if the weather stayed the same from year to year, we’d still see FG% climb about 0.3% every season. On top of that, playing in good weather effectively gives kickers a 2.1% accuracy increase over games played in the elements. Interesting, but nothing groundbreaking to report here.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nModel Comparison: The Impact of Weather on FG%\n\n\nMother Nature Means Business!\n\n\nPredictor\nNull (Season Effect)\nPartial (No Interaction)\nFull (Interaction)\n\n\n\n\nBaseline (Outside)\n0.784 (p=&lt;0.01)\n0.774 (p=&lt;0.01)\n0.776 (p=&lt;0.01)\n\n\nYearly Trend (Yds/Year)\n0.003 (p=&lt;0.01)\n0.003 (p=&lt;0.01)\n0.003 (p=0.0166)\n\n\nGood Weather Effect\n-\n0.021 (p=0.0483)\n0.016 (p=0.4214)\n\n\nInteraction\n-\n-\n0 (p=0.7962)\n\n\n\nNote:Estimates shown with p-values in parentheses. The high p-value for the ’Interaction’suggests it does not significantly improve the model.\n\n\nF-Tests:Partial vs Null (Roof Effect): p = 0.048309Full vs Partial (Interaction): p = 0.79616\n\n\n\n\n\n\n\n\nMoving on to the league median kick distance, the stats suggest that our eyes did not deceive us. For only outdoor kicks, it is unfazed by the weather. I’m gonna guess that many of you think this result is underwhelming.\nWRONG\nThis result couldn’t be more exciting because it means we can include both these terms in the model without unwanted effects. If you’re a stats nerd, then you know I am referring to the curse of multicollinearity.\nAre you ready for what’s next? ARE YOU READY????\nFrom here on out, we are really going to start really shifting gears and picking up the pace. These blogs will focus on building a robust model to predict the success of any given FG kick.\nSo far, we’ve analyzed the impact of the following on the seasonal trends in FG% and league median kick distance.\n\n\nSeason\n\n\nStadium Roof Type\n\n\nWeather\n\n\nI’ve carefully structured the model so that the impact of weather on any given FG kick is completely removed from the prediction for indoor kicks. If you are interested in how I did this, let me know! I’d be happy to explain.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nModel Comparison: League Median Kick Distance vs. Weather\n\n\nRain or Shine - You Gonna Kick Far!\n\n\nPredictor\nNull (Season Effect)\nPartial (No Interaction)\nFull (Interaction)\n\n\n\n\nBaseline (Outside)\n35.34 (p=&lt;0.01)\n35.4 (p=&lt;0.01)\n34.68 (p=&lt;0.01)\n\n\nYearly Trend (Yds/Year)\n0.19 (p=&lt;0.01)\n0.19 (p=&lt;0.01)\n0.25 (p=&lt;0.01)\n\n\nGood Weather Effect\n-\n-0.12 (p=0.7911)\n1.32 (p=0.1267)\n\n\nInteraction\n-\n-\n-0.12 (p=0.0538)\n\n\n\nNote:Estimates shown with p-values in parentheses. The high p-value for the ‘Good Weather Effect’ and ’Interaction’suggests that neither term significantly improves the model.\n\n\nF-Tests:Partial vs Null (Roof Effect): p = 0.79112Full vs Partial (Interaction): p = 0.053761"
+  },
+  {
+    "objectID": "kickers/blogs/league_trends_revisited.html#time-to-get-serious",
+    "href": "kickers/blogs/league_trends_revisited.html#time-to-get-serious",
+    "title": "Were those League Trends a Fluke?",
+    "section": "Time To Get Serious",
+    "text": "Time To Get Serious\nWe can clearly see that all terms in the model are statistically significant for predicting the success of any given FG kick. This is what you should take away from the results below.\n\n\nFor every 1-yard increase in kick distance, the odds of a make decrease by 10.1%\n\n\nIf we were to kick at the same distance every time, kicking outdoors in good weather reduces the odds of making a kick by 21.6% compared to kicking inside\n\n\nIf we are kicking outside, bad weather further reduces the odds of making a kick by an additional 16% compared to kicking in good weather\n\n\nIn other words, kicking outside in bad weather reduces the odds of making a kick by about 34% compared to kicking inside at the same distance. Hahaha holy crap that’s a lot!!!\n\n\n\n\n\n\n\n\n\n\n\n\n\nFG Probability: Environmental & Distance Model\n\n\nPredicting the Odds of a Successful Conversion\n\n\nPredictor\nOdds Ratio (p-value)\n95% CI\n\n\n\n\nBaseline (Inside)\n283.974 (p=&lt; 0.001)\n[232.534, 347.709]\n\n\nKick Distance (per Yard)\n0.899 (p=&lt; 0.001)\n[0.896, 0.903]\n\n\nYearly Trend\n1.041 (p=&lt; 0.001)\n[1.035, 1.046]\n\n\nOutside Effect (Good Weather)\n0.784 (p=&lt; 0.001)\n[0.72, 0.854]\n\n\nBad Weather Effect (Outside Kicks Only)\n0.841 (p=0.00673)\n[0.742, 0.954]\n\n\n\nNote: Values are exponentiated Odds Ratios. An OR &lt; 1 indicates a decrease in the odds of success. The Bad Weather Effect is conditional; it only applies to outside kicks.\n\n\n\n\n\n\n\n\nIf we focus on the 2025 season, we can even plot FG success probability curves for inside kicks, outside kicks in good weather, and outside kicks in bad weather. Look at the curve for outside kicks! What a drop off…\nWe can go even further and determine which kickers performed over the league average expectation in 2025. First, we gotta predict whether each kick should have been made or missed. Summing these probabilities over the 2025 season tells us how many kicks each kicker should have made. Subtracting this expectation from their actual total tells us who over- and underachieved.\nWill Reichard is a freakin’ beast… He accounted for four more FGs than an average league kicker if that kicker were given the same kicking conditions. His value to the Vikings is stupid. Twelve points can win a game in some match-ups.\nCough… cough… Denver vs LV in Week 10…\nCheck out the leaderboard here if you’re interested -&gt; Leaderboard"
+  },
+  {
+    "objectID": "kickers/blogs/league_trends_revisited.html#summary",
+    "href": "kickers/blogs/league_trends_revisited.html#summary",
+    "title": "Were those League Trends a Fluke?",
+    "section": "Summary",
+    "text": "Summary\nSeems like a lot happened in this blog, so it’d be good to summarize everything before closing out.\n\n\nDo starting kickers account for most of the FGs attempted in any given season?\n\n\n\nYeah… duh…\n\n\n\nAre really getting more accurate as the season march on?\n\n\n\nAbsolutely\n\n\n\nAre longer kicks a mirage?\n\n\n\nNo way, kick distance is increasing annually.\n\n\n\nHow does kicking fare inside vs. outside?\n\n\n\nClearly SpongeBob knew something about the great outdoors.\n\n\n\nWhy does every team seem to be getting a new stadium?\n\n\n\nCause they are, and they’re all retractable. Sofi started a trend.\n\n\n\nHow is Mother Nature treating outside FG attempts?\n\n\n\nShe clearly has some issues with kickers.\n\n\nTheir accuracy is taking quite a hit in bad weather games.\n\n\nBut they’re not afraid because they’re still kicking from insane distances.\n\n\n\nWho was the last year’s Most Valuable Kicker (MVK)?\n\n\n\nGive Will Reichard a round of applause!\n\n\nHe’s currently atop the leaderboard, but it’s gonna be fun to see how this changes as our model gets more accurate."
+  },
+  {
+    "objectID": "kickers/blogs/league_trends_revisited.html#closing",
+    "href": "kickers/blogs/league_trends_revisited.html#closing",
+    "title": "Were those League Trends a Fluke?",
+    "section": "Closing",
+    "text": "Closing\nIf you thought that was cool, keep thinking. We are just getting started. In the next blog, I am going to take a look at how all the following impact FG% and the league median kick distance. Those that do will be added to our model to adjust the rankings.\n\n\nTime zone changes\n\n\nAltitude\n\n\nBack-to-back divisional games\n\n\nBack-to-back games against opponents with records above .500"
+  },
+  {
+    "objectID": "kickers/blogs/league_trends_revisited.html#social-media",
+    "href": "kickers/blogs/league_trends_revisited.html#social-media",
+    "title": "Were those League Trends a Fluke?",
+    "section": "Social Media",
+    "text": "Social Media\n\nGitHub\nX\nLinkedIn\nEmail"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "NFL Blogging",
+    "section": "",
+    "text": "Blogging about the NFL is my desire to work in the league that I love."
+  },
+  {
+    "objectID": "about.html#the-mission",
+    "href": "about.html#the-mission",
+    "title": "NFL Blogging",
+    "section": "",
+    "text": "Blogging about the NFL is my desire to work in the league that I love."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Blogs",
+    "section": "",
+    "text": "Welcome to my NFL blogging page. You will find all my recent blogs listed here. :)\n\n\n\n\n\n\n\n\n\nWere those League Trends a Fluke?\n\n\n\n\n\nMar 25, 2026\n\n\n\n\n\n\n\nLeague-Wide Trends in NFL Kicking\n\n\n\n\n\nFeb 26, 2026\n\n\n\n\n\nNo matching items"
+  },
+  {
     "objectID": "kickers/blogs/league_kicker_trends.html",
     "href": "kickers/blogs/league_kicker_trends.html",
     "title": "League-Wide Trends in NFL Kicking",
@@ -54,26 +131,5 @@
     "title": "League-Wide Trends in NFL Kicking",
     "section": "Social Media",
     "text": "Social Media\n\nGitHub\nX\nLinkedIn\nEmail"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Blogs",
-    "section": "",
-    "text": "Welcome to my NFL blogging page. You will find all my recent blogs listed here. :)\n\n\n\n\n\n\n\n\n\nLeague-Wide Trends in NFL Kicking\n\n\n\n\n\nFeb 26, 2026\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "NFL Blogging",
-    "section": "",
-    "text": "Blogging about the NFL is my desire to work in the league that I love."
-  },
-  {
-    "objectID": "about.html#the-mission",
-    "href": "about.html#the-mission",
-    "title": "NFL Blogging",
-    "section": "",
-    "text": "Blogging about the NFL is my desire to work in the league that I love."
   }
 ]

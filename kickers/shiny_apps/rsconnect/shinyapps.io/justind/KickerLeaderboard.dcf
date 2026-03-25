@@ -1,0 +1,12 @@
+name: KickerLeaderboard
+title: KickerLeaderboard
+username: justind
+account: justind
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 16977714
+bundleId: 11761388
+url: https://justind.shinyapps.io/KickerLeaderboard/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
